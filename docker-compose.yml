@@ -5,13 +5,22 @@ services:
       args:
         UID: ${UID:-1000}
         GID: ${GID:-1000}
-    container_name: dev_container
+    container_name: linux_container
     volumes:
       # ホストのホームディレクトリをコンテナの ~/host にバインド
       - ${HOME}:/home/user/host
-
-      # カレントディレクトリをコンテナの ~ にバインド
-      - .:/home/user
+      # Neovim 設定をコンテナに反映
+      - ./data/.config/nvim:/home/user/.config/nvim:ro
+      # lazy.nvim とプラグインをコンテナ再作成後も保持
+      - ./data/.local/share/nvim:/home/user/.local/share/nvim
+      # lazy-lock.json などの Neovim の状態を保持
+      - ./data/.local/state/nvim:/home/user/.local/state/nvim
+      # 再生成可能な Neovim のキャッシュを保持
+      - ./data/.cache/nvim:/home/user/.cache/nvim
+      # コンテナ用のユーザー設定
+      - ./data/.gitconfig:/home/user/.gitconfig:ro
+      - ./data/.bashrc:/home/user/.bashrc:ro
+      - ./data/.tmux.conf:/home/user/.tmux.conf:ro
 
     tty: true
     stdin_open: true

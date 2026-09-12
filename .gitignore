@@ -1,0 +1,11 @@
+.bash_history
+.lesshst
+.local/*
+host/*
+# Neovim の bind mount 用ディレクトリ。生成物は管理しない。
+data/.cache/*
+data/.local/share/*
+data/.local/state/*
+!data/.local/state/nvim/
+data/.local/state/nvim/*
+!data/.local/state/nvim/lazy-lock.json
