@@ -1,0 +1,17 @@
+services:
+  dev:
+    build:
+      context: .
+      args:
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+    container_name: dev_container
+    volumes:
+      # ホストのホームディレクトリをコンテナの ~/host にバインド
+      - ${HOME}:/home/user/host
+
+      # カレントディレクトリをコンテナの ~ にバインド
+      - .:/home/user
+
+    tty: true
+    stdin_open: true
