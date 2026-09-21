@@ -33,11 +33,40 @@ require("lazy").setup({
       indent = { enabled = true },
       input = { enabled = true },
       notifier = { enabled = true },
-      picker = { enabled = true },
+      picker = {
+        enabled = true,
+        matcher = { fuzzy = false },
+        win = {
+          input = {
+            keys = {
+              ["<leader>c"] = { "close", mode = { "n", "i" } },
+            },
+          },
+          list = {
+            keys = {
+              ["<leader>c"] = { "close", mode = { "n", "x" } },
+            },
+          },
+        },
+      },
       quickfile = { enabled = true },
       scope = { enabled = true },
       statuscolumn = { enabled = true },
       words = { enabled = true },
+    },
+  },
+  {
+    "hedyhli/outline.nvim",
+    cmd = { "Outline", "OutlineOpen" },
+    keys = {
+      { "<leader>o", "<cmd>Outline<cr>", desc = "Toggle outline" },
+    },
+    opts = {
+      outline_window = {
+        position = "right",
+        width = 25,
+        focus_on_open = true,
+      },
     },
   },
   {
@@ -63,7 +92,11 @@ require("lazy").setup({
       filesystem = {
         window = {
           mappings = {
-            ["H"] = "toggle_hidden",
+            ["H"] = "navigate_up",
+            ["L"] = "set_root",
+            ["h"] = "close_node",
+            ["l"] = "open",
+            ["."] = "toggle_hidden",
             ["a"] = "add",
             ["A"] = "add_directory",
             ["r"] = "rename",
@@ -75,13 +108,23 @@ require("lazy").setup({
   },
   {
     "nvim-treesitter/nvim-treesitter",
-    branch = "main",
+    branch = "master",
     lazy = false,
+    build = ":TSUpdate",
+    config = function()
+      require("nvim-treesitter.configs").setup({
+        ensure_installed = { "c", "cpp", "python", "markdown", "markdown_inline" },
+        highlight = {
+          enable = true,
+        },
+      })
+    end,
   },
   {
     url = "https://codeberg.org/andyg/leap.nvim",
     config = function()
-      require("leap").add_default_mappings()
+      vim.keymap.set({ "n", "x", "o" }, "s", "<Plug>(leap)", { desc = "Leap" })
+      vim.keymap.set("n", "S", "<Plug>(leap-from-window)", { desc = "Leap from window" })
     end,
   },
   {
@@ -99,6 +142,11 @@ require("lazy").setup({
   {
     "nvim-lualine/lualine.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
+    opts = {},
+  },
+  {
+    "kylechui/nvim-surround",
+    version = "*",
     opts = {},
   },
 }, {
@@ -151,6 +199,54 @@ vim.opt.termguicolors = true
 vim.opt.signcolumn = "yes"
 vim.opt.cursorline = true
 
+vim.lsp.config("clangd", {
+  cmd = {
+    "clangd",
+    "--background-index",
+    "--clang-tidy",
+    "--completion-style=detailed",
+  },
+  filetypes = { "c", "cpp", "objc", "objcpp" },
+  root_markers = { "compile_commands.json", "compile_flags.txt", ".git" },
+})
+
+if vim.fn.executable("clangd") == 1 then
+  vim.lsp.enable("clangd")
+end
+
+vim.lsp.config("pyright", {
+  cmd = { "pyright-langserver", "--stdio" },
+  filetypes = { "python" },
+  root_markers = {
+    "pyproject.toml",
+    "setup.py",
+    "setup.cfg",
+    "requirements.txt",
+    "Pipfile",
+    "pyrightconfig.json",
+    ".git",
+  },
+})
+
+if vim.fn.executable("pyright-langserver") == 1 then
+  vim.lsp.enable("pyright")
+end
+
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(event)
+    local opts = { buffer = event.buf, silent = true }
+    vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+    vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+    vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+    vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+    vim.keymap.set("n", "<leader>lr", vim.lsp.buf.rename, opts)
+    vim.keymap.set("n", "<leader>la", vim.lsp.buf.code_action, opts)
+    vim.keymap.set("n", "<leader>lf", function()
+      vim.lsp.buf.format({ async = true })
+    end, opts)
+  end,
+})
+
 vim.keymap.set("n", "<leader>r", function()
   Snacks.picker.recent()
 end, { desc = "Recent files" })
@@ -168,6 +264,12 @@ end, { desc = "Notification history" })
 vim.keymap.set("n", "<leader>N", function()
   Snacks.notifier.hide()
 end, { desc = "Clear notifications" })
+
+vim.keymap.set("n", "<leader>c", function()
+  for _, picker in ipairs(Snacks.picker.get()) do
+    Snacks.picker.actions.close(picker)
+  end
+end, { desc = "Close picker" })
 
 -- スクロール
 vim.keymap.set("n", "<C-d>", function()
@@ -224,4 +326,11 @@ vim.keymap.set("n", "<leader>a", function()
   })
 end, { desc = "Browse symbols" })
 
+-- クリップボード操作
 vim.keymap.set("n", "<leader>t", "<cmd>OverseerToggle<cr>", { desc = "Toggle tasks" })
+
+vim.keymap.set("n", "<leader>yy", '"+yy', { desc = "Yank line to clipboard" })
+vim.keymap.set("x", "<leader>y", '"+y', { desc = "Yank selection to clipboard" })
+
+vim.keymap.set("n", "<leader>p", '"+p', { desc = "Paste after cursor" })
+vim.keymap.set("n", "<leader>pp", '"+P', { desc = "Paste before cursor" })

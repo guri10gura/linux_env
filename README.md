@@ -60,6 +60,17 @@ $ ./script/setup_linux.sh
 > winget install BurntSushi.ripgrep.MSVC
 ```
 
+* clangd をインストール
+```
+> winget install --id LLVM.clangd --exact
+```
+
+* pyright をインストール
+```
+T.B.D.
+```
+
+
 ### 手順
 下記のコマンドで nvim設定を適用する
 ```shell
@@ -69,10 +80,14 @@ $ ./script/setup_windows.sh
 ## Dockerfile
 ### インストールパッケージ:
 * build-essential
+* clangd
 * cmake
+* nodejs
+* npm
 * ripgrep
 * git
 * Neovim 0.11.4
+* pyright
 * python3
 * tmux
 
@@ -111,6 +126,8 @@ data/
 * nvim-neo-tree/neo-tree.nvim
 * leap.nvim
 * m-demare/hlargs.nvim
+
 * stevearc/aerial.nvim
 * stevearc/overseer.nvim
 * nvim-lualine/lualine.nvim
+

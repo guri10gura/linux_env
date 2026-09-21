@@ -9,7 +9,8 @@ case $- in
 esac
 
 if [ -z "${TMUX:-}" ] && command -v tmux >/dev/null 2>&1; then
-    tmux new-session -A -s main
+    tmux_session_name="main-$(tty | sed 's#^/dev/##; s#[^[:alnum:]_-]#-#g')"
+    tmux new-session -A -s "$tmux_session_name"
 fi
 
 # don't put duplicate lines or lines starting with space in the history.

@@ -12,13 +12,17 @@ ENV GID=${GID:-1000}
 # パッケージ更新とインストール
 RUN apt-get update && apt-get install -y \
     build-essential \
+    clangd \
     cmake \
     curl \
     git \
+    nodejs \
+    npm \
     python3 \
     ripgrep \
     tmux \
     sudo \
+    && npm install --global pyright \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && curl -fsSL "https://github.com/neovim/neovim/releases/download/v${NEOVIM_VERSION}/nvim-linux-x86_64.tar.gz" \
