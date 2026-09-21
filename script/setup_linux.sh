@@ -22,20 +22,21 @@ ensure_link() {
       return
     fi
 
-    if [ -e "${dst}" ] && [ ! -L "${dst}" ]; then
-      echo "[skip] ${dst} already exists and is not a symlink: leaving it unchanged"
+    read -r -p "${dst} already exists. Overwrite it? [y/N] " answer || answer=""
+    if [[ "${answer}" != [Yy] ]]; then
+      echo "[skip] ${dst}: leaving it unchanged"
       return
     fi
+
+    rm -rf -- "${dst}"
   fi
 
-  ln -sfn "${src}" "${dst}"
+  ln -s "${src}" "${dst}"
 }
 
 # Same role as docker-compose volume mounts:
-# - host home is exposed as ~/host inside the container
 # - project config is mounted read-only into the container
 # - plugin cache/state are kept under the project data directory
-ensure_link "${ROOT_DIR}/host" "${HOST_HOME}/host"
 ensure_link "${ROOT_DIR}/data/.config/nvim" "${HOST_HOME}/.config/nvim"
 ensure_link "${ROOT_DIR}/data/.local/share/nvim" "${HOST_HOME}/.local/share/nvim"
 ensure_link "${ROOT_DIR}/data/.local/state/nvim" "${HOST_HOME}/.local/state/nvim"

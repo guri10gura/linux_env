@@ -15,6 +15,15 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
   {
+    "altercation/vim-colors-solarized",
+    lazy = false,
+    priority = 1000,
+    config = function()
+      vim.o.background = "dark"
+      vim.cmd.colorscheme("solarized")
+    end,
+  },
+  {
     "folke/snacks.nvim",
     priority = 1000,
     lazy = false,
@@ -50,10 +59,27 @@ require("lazy").setup({
       "MunifTanjim/nui.nvim",
       "nvim-tree/nvim-web-devicons",
     },
-    opts = {},
+    opts = {
+      filesystem = {
+        window = {
+          mappings = {
+            ["H"] = "toggle_hidden",
+            ["a"] = "add",
+            ["A"] = "add_directory",
+            ["r"] = "rename",
+            ["d"] = "delete",
+          },
+        },
+      },
+    },
   },
   {
-    "ggandor/leap.nvim",
+    "nvim-treesitter/nvim-treesitter",
+    branch = "main",
+    lazy = false,
+  },
+  {
+    url = "https://codeberg.org/andyg/leap.nvim",
     config = function()
       require("leap").add_default_mappings()
     end,
@@ -63,9 +89,8 @@ require("lazy").setup({
     opts = {},
   },
   {
-    "stevearc/aerial.nvim",
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-    opts = {},
+    "t9md/vim-quickhl",
+    lazy = false,
   },
   {
     "stevearc/overseer.nvim",
@@ -79,7 +104,7 @@ require("lazy").setup({
 }, {
   change_detection = { notify = false },
   checker = { enabled = true },
-  install = { colorscheme = { "habamax" } },
+  install = { colorscheme = { "solarized", "habamax" } },
   lockfile = vim.fn.stdpath("state") .. "/nvim/lazy-lock.json",
   performance = {
     rtp = {
@@ -97,8 +122,23 @@ require("lazy").setup({
   },
 })
 
+vim.api.nvim_set_hl(0, "NeoTreeFloatNormal", { bg = "#073642", fg = "#eee8d5" })
+vim.api.nvim_set_hl(0, "NeoTreeFloatBorder", { bg = "#073642", fg = "#cb4b16" })
+vim.api.nvim_set_hl(0, "NeoTreeFloatTitle", { bg = "#cb4b16", fg = "#fdf6e3", bold = true })
+vim.api.nvim_set_hl(0, "NeoTreeMessage", { fg = "#b58900", bold = true })
+
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
+
+vim.keymap.set("c", "<CR>", function()
+  if vim.fn.getcmdtype() == ":" and vim.fn.getcmdline() == "e." then
+    vim.schedule(function()
+      vim.cmd("Neotree toggle")
+    end)
+    return "<C-c>"
+  end
+  return "<CR>"
+end, { expr = true, desc = "Open Neo-tree with :e." })
 
 vim.opt.number = true
 vim.opt.expandtab = true
@@ -120,14 +160,14 @@ vim.keymap.set("n", "<leader>b", function()
   Snacks.picker.buffers()
 end, { desc = "Buffers" })
 
--- 通知履歴
-vim.keymap.set("n", "<leader>nn", function()
+-- 通知
+vim.keymap.set("n", "<leader>n", function()
   Snacks.notifier.show_history()
-end, { desc = "Snacks: notification history" })
+end, { desc = "Notification history" })
 
-vim.keymap.set("n", "<leader>no", function()
+vim.keymap.set("n", "<leader>N", function()
   Snacks.notifier.hide()
-end, { desc = "Snacks: clear notifications" })
+end, { desc = "Clear notifications" })
 
 -- スクロール
 vim.keymap.set("n", "<C-d>", function()
@@ -156,12 +196,32 @@ vim.keymap.set("n", "<leader>g", function()
   Snacks.picker.grep()
 end, { desc = "Grep" })
 
+vim.keymap.set({ "n", "x" }, "<leader>m", "<Plug>(quickhl-manual-this)")
+vim.keymap.set({ "n", "x" }, "<leader>M", "<Plug>(quickhl-manual-reset)")
+vim.keymap.set("n", "<leader>j", "<Plug>(quickhl-cword-toggle)")
+
+-- neo-tree
 vim.keymap.set("n", "<leader>e", "<cmd>Neotree toggle<cr>", { desc = "Toggle file tree" })
--- vim.keymap.set("n", "<leader>ff", function()
---   Snacks.picker.files()
--- end, { desc = "Find files" })
--- vim.keymap.set("n", "<leader>fg", function()
---   Snacks.picker.grep()
--- end, { desc = "Grep files" })
-vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<cr>", { desc = "Toggle symbols" })
-vim.keymap.set("n", "<leader>oo", "<cmd>OverseerToggle<cr>", { desc = "Toggle tasks" })
+vim.keymap.set("n", "<leader>E", "<cmd>Neotree reveal<cr>", { desc = "Reveal current file in tree" })
+
+vim.keymap.set("n", "<leader>a", function()
+  Snacks.picker.treesitter({
+    filter = {
+      default = {
+        "Class",
+        "Enum",
+        "Field",
+        "Function",
+        "Method",
+        "Module",
+        "Namespace",
+        "Parameter",
+        "Struct",
+        "Trait",
+        "Variable",
+      },
+    },
+  })
+end, { desc = "Browse symbols" })
+
+vim.keymap.set("n", "<leader>t", "<cmd>OverseerToggle<cr>", { desc = "Toggle tasks" })

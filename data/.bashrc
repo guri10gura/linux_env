@@ -8,6 +8,10 @@ case $- in
       *) return;;
 esac
 
+if [ -z "${TMUX:-}" ] && command -v tmux >/dev/null 2>&1; then
+    tmux new-session -A -s main
+fi
+
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
@@ -91,6 +95,8 @@ fi
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
+alias vi='nvim'
+alias vim='nvim'
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert

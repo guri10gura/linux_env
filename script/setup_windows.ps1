@@ -55,8 +55,11 @@ function Ensure-Link {
         }
 
         if (-not $Force) {
-            Write-Host "[skip] $dstFull already exists. Use -Force to replace it."
-            return
+            $answer = Read-Host "$dstFull already exists. Overwrite it? [y/N]"
+            if ($answer -notmatch '^[Yy]$') {
+                Write-Host "[skip] $dstFull`: leaving it unchanged"
+                return
+            }
         }
 
         $backup = "$dstFull.bak.$((Get-Date).ToString('yyyyMMdd-HHmmss'))"

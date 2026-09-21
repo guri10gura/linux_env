@@ -26,7 +26,6 @@ sudo systemctl restart docker
 exit
 ```
 
-
 ### 手順
 下記のコマンドで 環境構築できる。
 ```shell
@@ -67,9 +66,6 @@ $ ./script/setup_linux.sh
 $ ./script/setup_windows.sh
 ```
 
-
-
-
 ## Dockerfile
 ### インストールパッケージ:
 * build-essential
@@ -109,14 +105,12 @@ data/
 ## Neovim設定
 ### プラグイン
 
-snacks.nvim
-lazy.nvim
-blink.cmp
-nvim-neo-tree/neo-tree.nvim
-leap.nvim
-m-demare/hlargs.nvim
-stevearc/aerial.nvim
-stevearc/overseer.nvim
-nvim-lualine/lualine.nvim
-
-
+* snacks.nvim
+* lazy.nvim
+* blink.cmp
+* nvim-neo-tree/neo-tree.nvim
+* leap.nvim
+* m-demare/hlargs.nvim
+* stevearc/aerial.nvim
+* stevearc/overseer.nvim
+* nvim-lualine/lualine.nvim
