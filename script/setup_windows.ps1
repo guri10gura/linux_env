@@ -6,9 +6,14 @@ $ErrorActionPreference = 'Stop'
 
 $rootDir = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $hostHome = if ($env:USERPROFILE) { $env:USERPROFILE } else { $env:HOME }
+$localAppData = $env:LOCALAPPDATA
 
 if (-not $hostHome) {
     throw "USERPROFILE and HOME are both empty. This script is intended for Windows."
+}
+
+if (-not $localAppData) {
+    throw "LOCALAPPDATA is empty. This script is intended for native Windows Neovim."
 }
 
 $dirsToCreate = @(
@@ -78,10 +83,10 @@ Ensure-Directory (Join-Path $hostHome '.local\state')
 Ensure-Directory (Join-Path $hostHome '.cache')
 
 Ensure-Link -Source (Join-Path $rootDir 'host') -Destination (Join-Path $hostHome 'host') -Kind dir
-Ensure-Link -Source (Join-Path $rootDir 'data\.config\nvim') -Destination (Join-Path $hostHome '.config\nvim') -Kind dir
-Ensure-Link -Source (Join-Path $rootDir 'data\.local\share\nvim') -Destination (Join-Path $hostHome '.local\share\nvim') -Kind dir
-Ensure-Link -Source (Join-Path $rootDir 'data\.local\state\nvim') -Destination (Join-Path $hostHome '.local\state\nvim') -Kind dir
-Ensure-Link -Source (Join-Path $rootDir 'data\.cache\nvim') -Destination (Join-Path $hostHome '.cache\nvim') -Kind dir
+Ensure-Link -Source (Join-Path $rootDir 'data\.config\nvim') -Destination (Join-Path $localAppData 'nvim') -Kind dir
+Ensure-Link -Source (Join-Path $rootDir 'data\.local\share\nvim') -Destination (Join-Path $localAppData 'nvim-data') -Kind dir
+Ensure-Link -Source (Join-Path $rootDir 'data\.local\state\nvim') -Destination (Join-Path $localAppData 'nvim-data\nvim') -Kind dir
+Ensure-Link -Source (Join-Path $rootDir 'data\.cache\nvim') -Destination (Join-Path $env:TEMP 'nvim') -Kind dir
 Ensure-Link -Source (Join-Path $rootDir 'data\.gitconfig') -Destination (Join-Path $hostHome '.gitconfig') -Kind file
 Ensure-Link -Source (Join-Path $rootDir 'data\.bashrc') -Destination (Join-Path $hostHome '.bashrc') -Kind file
 Ensure-Link -Source (Join-Path $rootDir 'data\.tmux.conf') -Destination (Join-Path $hostHome '.tmux.conf') -Kind file
@@ -94,10 +99,10 @@ Write-Host "Host home: $hostHome"
 Write-Host ""
 Write-Host "Equivalent paths:"
 Write-Host "  $hostHome\host -> $rootDir\host"
-Write-Host "  $hostHome\.config\nvim -> $rootDir\data\.config\nvim"
-Write-Host "  $hostHome\.local\share\nvim -> $rootDir\data\.local\share\nvim"
-Write-Host "  $hostHome\.local\state\nvim -> $rootDir\data\.local\state\nvim"
-Write-Host "  $hostHome\.cache\nvim -> $rootDir\data\.cache\nvim"
+Write-Host "  $localAppData\nvim -> $rootDir\data\.config\nvim"
+Write-Host "  $localAppData\nvim-data -> $rootDir\data\.local\share\nvim"
+Write-Host "  $localAppData\nvim-data\nvim -> $rootDir\data\.local\state\nvim"
+Write-Host "  $env:TEMP\nvim -> $rootDir\data\.cache\nvim"
 Write-Host "  $hostHome\.gitconfig -> $rootDir\data\.gitconfig"
 Write-Host "  $hostHome\.bashrc -> $rootDir\data\.bashrc"
 Write-Host "  $hostHome\.tmux.conf -> $rootDir\data\.tmux.conf"
