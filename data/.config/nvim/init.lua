@@ -119,11 +119,23 @@ require("lazy").setup({
     lazy = false,
     build = ":TSUpdate",
     config = function()
-      require("nvim-treesitter.configs").setup({
-        ensure_installed = { "c", "cpp", "python", "markdown", "markdown_inline" },
-        highlight = {
-          enable = true,
-        },
+      local languages = {
+        "c",
+        "cpp",
+        "python",
+        "markdown",
+        "markdown_inline",
+      }
+
+      require("nvim-treesitter").setup()
+      require("nvim-treesitter").install(languages)
+
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = { "c", "cpp", "python", "markdown" },
+        callback = function()
+          pcall(vim.treesitter.start)
+          vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        end,
       })
     end,
   },
