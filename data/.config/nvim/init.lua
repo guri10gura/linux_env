@@ -118,23 +118,23 @@ require("lazy").setup({
     branch = "master",
     lazy = false,
     build = ":TSUpdate",
-    config = function()
-      local languages = {
-        "c",
-        "cpp",
-        "python",
-        "markdown",
-        "markdown_inline",
-      }
-
-      require("nvim-treesitter").setup()
-      require("nvim-treesitter").install(languages)
+    opts = {
+      ensure_installed = { "c", "cpp", "python", "markdown", "markdown_inline" },
+      highlight = { enable = true },
+    },
+    config = function(_, opts)
+      local ok, configs = pcall(require, "nvim-treesitter.configs")
+      if ok and configs and configs.setup then
+        configs.setup(opts)
+      end
 
       vim.api.nvim_create_autocmd("FileType", {
         pattern = { "c", "cpp", "python", "markdown" },
         callback = function()
           pcall(vim.treesitter.start)
-          vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          if vim.bo then
+            vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          end
         end,
       })
     end,
