@@ -1,5 +1,8 @@
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
     "git",
@@ -96,11 +99,15 @@ require("lazy").setup({
             ["L"] = "set_root",
             ["h"] = "close_node",
             ["l"] = "open",
+            ["e"] = "open",
             ["."] = "toggle_hidden",
             ["a"] = "add",
             ["A"] = "add_directory",
             ["r"] = "rename",
             ["d"] = "delete",
+            ["c"] = "copy_to_clipboard",
+            ["x"] = "cut_to_clipboard",
+            ["p"] = "paste_from_clipboard",
           },
         },
       },
@@ -136,8 +143,38 @@ require("lazy").setup({
     lazy = false,
   },
   {
-    "stevearc/overseer.nvim",
-    opts = {},
+    "akinsho/toggleterm.nvim",
+    version = "*",
+    config = function()
+      require("toggleterm").setup({
+        size = function(term)
+          if term.direction == "horizontal" then
+            return 15
+          elseif term.direction == "vertical" then
+            return vim.o.columns * 0.4
+          end
+          return 20
+        end,
+        hide_numbers = true,
+        shade_filetypes = {},
+        shade_terminals = true,
+        shading_factor = 2,
+        start_in_insert = true,
+        persist_size = true,
+        direction = "horizontal",
+      })
+
+      local Terminal = require("toggleterm.terminal").Terminal
+      local lazygit = Terminal:new({ cmd = "lazygit", dir = "git_dir", direction = "float", hidden = true })
+
+      vim.keymap.set("t", "<Esc><Esc>", [[<C-\><C-n>]], { desc = "Exit terminal mode" })
+      vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm<cr>", { desc = "Toggle terminal" })
+      vim.keymap.set("n", "<leader>tv", "<cmd>ToggleTerm direction=vertical<cr>", { desc = "Toggle vertical terminal" })
+      vim.keymap.set("n", "<leader>th", "<cmd>ToggleTerm direction=horizontal<cr>", { desc = "Toggle horizontal terminal" })
+      vim.keymap.set("n", "<leader>tg", function()
+        lazygit:toggle()
+      end, { desc = "Toggle lazygit" })
+    end,
   },
   {
     "nvim-lualine/lualine.nvim",
@@ -175,9 +212,6 @@ vim.api.nvim_set_hl(0, "NeoTreeFloatBorder", { bg = "#073642", fg = "#cb4b16" })
 vim.api.nvim_set_hl(0, "NeoTreeFloatTitle", { bg = "#cb4b16", fg = "#fdf6e3", bold = true })
 vim.api.nvim_set_hl(0, "NeoTreeMessage", { fg = "#b58900", bold = true })
 
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
-
 vim.keymap.set("c", "<CR>", function()
   if vim.fn.getcmdtype() == ":" and vim.fn.getcmdline() == "e." then
     vim.schedule(function()
@@ -198,6 +232,14 @@ vim.opt.smartcase = true
 vim.opt.termguicolors = true
 vim.opt.signcolumn = "yes"
 vim.opt.cursorline = true
+
+vim.keymap.set("i", "{} ", "{}<Left>", { noremap = true, desc = "Insert empty braces" })
+vim.keymap.set("i", "[] ", "[]<Left>", { noremap = true, desc = "Insert empty brackets" })
+vim.keymap.set("i", "() ", "()<Left>", { noremap = true, desc = "Insert empty parentheses" })
+vim.keymap.set("i", "\"\" ", "\"\"<Left>", { noremap = true, desc = "Insert empty double quotes" })
+vim.keymap.set("i", "'' ", "''<Left>", { noremap = true, desc = "Insert empty single quotes" })
+vim.keymap.set("i", "`` ", "``<Left>", { noremap = true, desc = "Insert empty backticks" })
+vim.keymap.set("i", "<> ", "<><Left>", { noremap = true, desc = "Insert empty angle brackets" })
 
 vim.lsp.config("clangd", {
   cmd = {
@@ -327,10 +369,7 @@ vim.keymap.set("n", "<leader>a", function()
 end, { desc = "Browse symbols" })
 
 -- クリップボード操作
-vim.keymap.set("n", "<leader>t", "<cmd>OverseerToggle<cr>", { desc = "Toggle tasks" })
-
 vim.keymap.set("n", "<leader>yy", '"+yy', { desc = "Yank line to clipboard" })
 vim.keymap.set("x", "<leader>y", '"+y', { desc = "Yank selection to clipboard" })
-
 vim.keymap.set("n", "<leader>p", '"+p', { desc = "Paste after cursor" })
 vim.keymap.set("n", "<leader>pp", '"+P', { desc = "Paste before cursor" })

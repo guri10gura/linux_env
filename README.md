@@ -67,7 +67,7 @@ $ ./script/setup_linux.sh
 
 * pyright をインストール
 ```
-T.B.D.
+TODO: 要確認
 ```
 
 
@@ -92,12 +92,12 @@ $ ./script/setup_windows.sh
 * tmux
 
 ### その他の設定
-Ubuntu24.04
-ユーザー名：user
-パスワード：user
-コンテナの~/host に ホストの ~ をバインド
-コンテナから ~/host 配下に書き込み可能とする
-プロジェクトの `data` 配下にあるユーザー設定を個別にバインド
+* Ubuntu24.04
+* ユーザー名：user
+* パスワード：user
+* コンテナの~/host に ホストの ~ をバインド
+* コンテナから ~/host 配下に書き込み可能とする
+* プロジェクトの `data` 配下にあるユーザー設定を個別にバインド
 
 ### ユーザー設定の構成
 
@@ -120,14 +120,25 @@ data/
 ## Neovim設定
 ### プラグイン
 
-* snacks.nvim
-* lazy.nvim
-* blink.cmp
-* nvim-neo-tree/neo-tree.nvim
-* leap.nvim
-* m-demare/hlargs.nvim
+| プラグイン | 説明 |
+| --- | --- |
+| folke/lazy.nvim | プラグインマネージャー。依存関係管理と遅延読み込みを行う。 |
+| altercation/vim-colors-solarized | Solarized カラースキーム。ダークテーマを適用する。 |
+| folke/snacks.nvim | ファイラ、ピッカー、通知、入力支援などをまとめて提供するユーティリティ群。 |
+| hedyhli/outline.nvim | シンボル一覧をアウトラインとして表示し、関数やクラスの見通しをよくする。 |
+| saghen/blink.cmp | 補完エンジン。LSP、path、snippet、buffer を組み合わせて補完を行う。 |
+| nvim-neo-tree/neo-tree.nvim | ファイルツリー表示。プロジェクト内の移動や管理に利用する。 |
+| nvim-treesitter/nvim-treesitter | 構文解析とハイライト。C/C++/Python/Markdown などの構文強調を提供する。 |
+| andyg/leap.nvim | 高速なカーソル移動。`s` で単語や位置にジャンプする。 |
+| m-demare/hlargs.nvim | 関数や引数のハイライトを強化する。 |
+| t9md/vim-quickhl | ハイライト強調の補助。検索や参照位置の可視化に使う。 |
+| akinsho/toggleterm.nvim | 端末の開閉を容易にし、lazygit や複数のシェルを扱う。 |
+| nvim-lualine/lualine.nvim | ステータスライン表示。現在のモードやファイル情報を表示する。 |
+| kylechui/nvim-surround | 選択範囲を括弧やタグで囲む補助機能を提供する。 |
 
-* stevearc/aerial.nvim
-* stevearc/overseer.nvim
-* nvim-lualine/lualine.nvim
 
+### プラグイン候補
+
+| プラグイン | 説明 |
+| --- | --- |
+| stevearc/overseer.nvim | タスク実行管理。ビルドやテスト、コマンドの実行結果を一覧で管理する。 |
