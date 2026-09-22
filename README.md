@@ -56,18 +56,24 @@ $ ./script/setup_linux.sh
 ```
 
 * ripgrep をインストール
+  <br>snapsでgrepを利用するために必要
 ```cmd
 > winget install BurntSushi.ripgrep.MSVC
 ```
 
 * clangd をインストール
+  <br>outline.nvimが利用する C/C++ 向けLSP作成のため必要
 ```
 > winget install --id LLVM.clangd --exact
 ```
 
 * pyright をインストール
-```
-TODO: 要確認
+  <br>outline.nvimが利用する python向けLSP作成のため必要
+  + Node.jsをインストール
+    <br>[Node.js®をダウンロードする](https://nodejs.org/ja/download)
+  + npmでpyrightをインストール
+```powershell
+> npm install -g pyright
 ```
 
 
@@ -142,3 +148,4 @@ data/
 | プラグイン | 説明 |
 | --- | --- |
 | stevearc/overseer.nvim | タスク実行管理。ビルドやテスト、コマンドの実行結果を一覧で管理する。 |
+| stevearc/aerial.nvim | アウトライン |

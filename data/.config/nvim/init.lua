@@ -76,7 +76,11 @@ require("lazy").setup({
     "saghen/blink.cmp",
     version = "*",
     opts = {
-      keymap = { preset = "default" },
+      keymap = {
+        preset = "default",
+        ["<C-j>"] = { "select_next", "fallback" },
+        ["<C-k>"] = { "select_prev", "fallback" },
+      },
       appearance = { nerd_font_variant = "mono" },
       completion = { documentation = { auto_show = true } },
       sources = { default = { "lsp", "path", "snippets", "buffer" } },
@@ -120,24 +124,12 @@ require("lazy").setup({
     build = ":TSUpdate",
     opts = {
       ensure_installed = { "c", "cpp", "python", "markdown", "markdown_inline" },
-      highlight = { enable = true },
+      highlight = {
+        enable = true,
+        additional_vim_regex_highlighting = false,
+      },
+      indent = { enable = true },
     },
-    config = function(_, opts)
-      local ok, configs = pcall(require, "nvim-treesitter.configs")
-      if ok and configs and configs.setup then
-        configs.setup(opts)
-      end
-
-      vim.api.nvim_create_autocmd("FileType", {
-        pattern = { "c", "cpp", "python", "markdown" },
-        callback = function()
-          pcall(vim.treesitter.start)
-          if vim.bo then
-            vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-          end
-        end,
-      })
-    end,
   },
   {
     url = "https://codeberg.org/andyg/leap.nvim",
@@ -199,8 +191,8 @@ require("lazy").setup({
     opts = {},
   },
 }, {
-  change_detection = { notify = false },
-  checker = { enabled = true },
+  change_detection = { enabled = false, notify = false },
+  checker = { enabled = false },
   install = { colorscheme = { "solarized", "habamax" } },
   lockfile = vim.fn.stdpath("state") .. "/nvim/lazy-lock.json",
   performance = {
@@ -218,6 +210,15 @@ require("lazy").setup({
     },
   },
 })
+
+vim.api.nvim_set_hl(0, "@markup.heading.1.markdown", { fg = "#dc322f", bold = true })
+vim.api.nvim_set_hl(0, "@markup.heading.2.markdown", { fg = "#cb4b16", bold = true })
+vim.api.nvim_set_hl(0, "@markup.heading.3.markdown", { fg = "#d33682", bold = true })
+vim.api.nvim_set_hl(0, "@markup.link.markdown", { fg = "#268bd2", underline = true })
+vim.api.nvim_set_hl(0, "@markup.raw.markdown", { fg = "#859900" })
+vim.api.nvim_set_hl(0, "@markup.emphasis.markdown", { italic = true })
+vim.api.nvim_set_hl(0, "@markup.strong.markdown", { bold = true })
+vim.api.nvim_set_hl(0, "@markup.quote.markdown", { fg = "#93a1a1", italic = true })
 
 vim.api.nvim_set_hl(0, "NeoTreeFloatNormal", { bg = "#073642", fg = "#eee8d5" })
 vim.api.nvim_set_hl(0, "NeoTreeFloatBorder", { bg = "#073642", fg = "#cb4b16" })
@@ -381,6 +382,10 @@ vim.keymap.set("n", "<leader>a", function()
 end, { desc = "Browse symbols" })
 
 -- クリップボード操作
+-- Blockwise visual selection: terminal paste often captures Ctrl-v first.
+-- Use Ctrl-q as the Vim block selection key instead.
+vim.keymap.set({ "n", "v", "o" }, "<C-q>", "<C-v>", { noremap = true, desc = "Blockwise visual selection" })
+
 vim.keymap.set("n", "<leader>yy", '"+yy', { desc = "Yank line to clipboard" })
 vim.keymap.set("x", "<leader>y", '"+y', { desc = "Yank selection to clipboard" })
 vim.keymap.set("n", "<leader>p", '"+p', { desc = "Paste after cursor" })

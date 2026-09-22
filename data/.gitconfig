@@ -10,4 +10,4 @@
 	email = you@example.com
 	name = Your Name
 [core]
-	editor = vim
+	editor = nvim
