@@ -42,12 +42,12 @@ require("lazy").setup({
         win = {
           input = {
             keys = {
-              ["<leader>c"] = { "close", mode = { "n", "i" } },
+              ["<leader>sc"] = { "close", mode = { "n", "i" } },
             },
           },
           list = {
             keys = {
-              ["<leader>c"] = { "close", mode = { "n", "x" } },
+              ["<leader>sc"] = { "close", mode = { "n", "x" } },
             },
           },
         },
@@ -71,6 +71,70 @@ require("lazy").setup({
         focus_on_open = true,
       },
     },
+  },
+  {
+    "folke/trouble.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    cmd = { "Trouble", "TroubleToggle", "TroubleClose", "TroubleRefresh" },
+    keys = {
+      { "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Trouble: workspace diagnostics" },
+      { "<leader>xw", "<cmd>Trouble diagnostics toggle<cr>", desc = "Trouble: workspace diagnostics (alias)" },
+      { "<leader>xd", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Trouble: document diagnostics" },
+      { "<leader>xq", "<cmd>Trouble qflist toggle<cr>", desc = "Trouble: quickfix" },
+      { "<leader>xl", "<cmd>Trouble loclist toggle<cr>", desc = "Trouble: loclist" },
+      { "gR", "<cmd>Trouble lsp_references toggle<cr>", desc = "Trouble: references" },
+    },
+    opts = {
+      auto_open = false,
+      auto_close = false,
+      use_diagnostic_signs = true,
+      focus = true,
+    },
+  },
+  {
+    "tpope/vim-fugitive",
+    cmd = { "Git", "G", "Gdiffsplit", "Gread", "Gwrite", "Gblame" },
+    keys = {
+      { "<leader>gs", "<cmd>Git status<cr>", desc = "Git status (read-only)" },
+      { "<leader>gb", "<cmd>Git blame<cr>", desc = "Git blame" },
+      {
+        "<leader>gl",
+        function()
+          local Terminal = require("toggleterm.terminal").Terminal
+          local term = Terminal:new({
+            cmd = "git --no-pager log --graph --decorate --all --date=short --format='%C(yellow)%h%Creset %s %C(green)(%cr)%Creset'",
+            direction = "float",
+            hidden = true,
+            close_on_exit = false,
+          })
+          term:toggle()
+        end,
+        desc = "Git log graph (terminal)",
+      },
+    },
+  },
+  {
+    "sindrets/diffview.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    cmd = {
+      "DiffviewOpen",
+      "DiffviewClose",
+      "DiffviewToggleFiles",
+      "DiffviewFocusFiles",
+      "DiffviewFileHistory",
+      "DiffviewLog",
+    },
+    keys = {
+      { "<leader>gd", "<cmd>DiffviewOpen<cr>", desc = "Diffview: open" },
+      { "<leader>gD", "<cmd>DiffviewClose<cr>", desc = "Diffview: close" },
+      { "<leader>gh", "<cmd>DiffviewFileHistory %<cr>", desc = "Diffview: file history" },
+      { "<leader>gH", "<cmd>DiffviewFileHistory<cr>", desc = "Diffview: project history" },
+    },
+    config = function()
+      require("diffview").setup({
+        enhanced_diff_hl = true,
+      })
+    end,
   },
   {
     "saghen/blink.cmp",
@@ -122,14 +186,17 @@ require("lazy").setup({
     branch = "master",
     lazy = false,
     build = ":TSUpdate",
-    opts = {
-      ensure_installed = { "c", "cpp", "python", "markdown", "markdown_inline" },
-      highlight = {
-        enable = true,
-        additional_vim_regex_highlighting = false,
-      },
-      indent = { enable = true },
-    },
+    config = function()
+      require("nvim-treesitter.configs").setup({
+        ensure_installed = { "c", "cpp", "python", "markdown", "markdown_inline" },
+        auto_install = true,
+        highlight = {
+          enable = true,
+          additional_vim_regex_highlighting = false,
+        },
+        indent = { enable = true },
+      })
+    end,
   },
   {
     url = "https://codeberg.org/andyg/leap.nvim",
@@ -140,7 +207,51 @@ require("lazy").setup({
   },
   {
     "m-demare/hlargs.nvim",
-    opts = {},
+    config = function()
+      require("hlargs").setup({
+        hl_priority = 150,
+        paint_arg_declarations = true,
+        paint_arg_usages = true,
+      })
+    end,
+  },
+  {
+    "stevearc/conform.nvim",
+    cmd = { "ConformInfo" },
+    keys = {
+      {
+        "<leader>f",
+        function()
+          local mode = vim.fn.mode()
+          if mode == "v" or mode == "V" or mode == "\x16" then
+            if vim.bo.filetype == "markdown" then
+              require("conform").format({ async = true, lsp_fallback = true })
+              return
+            end
+
+            local range = {
+              start = { vim.fn.line("'<"), 0 },
+              ["end"] = { vim.fn.line("'>"), vim.fn.col("'>") - 1 },
+            }
+            require("conform").format({ async = true, lsp_fallback = true, range = range })
+            return
+          end
+
+          require("conform").format({ async = true, lsp_fallback = true })
+        end,
+        mode = { "n", "x" },
+        desc = "Format selection or buffer",
+      },
+    },
+    opts = {
+      formatters_by_ft = {
+        python = { "black" },
+        cpp = { "clang_format" },
+        c = { "clang_format" },
+        markdown = { "prettier" },
+      },
+      format_on_save = false,
+    },
   },
   {
     "t9md/vim-quickhl",
@@ -169,15 +280,21 @@ require("lazy").setup({
       })
 
       local Terminal = require("toggleterm.terminal").Terminal
-      local lazygit = Terminal:new({ cmd = "lazygit", dir = "git_dir", direction = "float", hidden = true })
+      Terminal:new({ cmd = "lazygit", dir = "git_dir", direction = "float", hidden = true })
 
       vim.keymap.set("t", "<Esc><Esc>", [[<C-\><C-n>]], { desc = "Exit terminal mode" })
       vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm<cr>", { desc = "Toggle terminal" })
       vim.keymap.set("n", "<leader>tv", "<cmd>ToggleTerm direction=vertical<cr>", { desc = "Toggle vertical terminal" })
       vim.keymap.set("n", "<leader>th", "<cmd>ToggleTerm direction=horizontal<cr>", { desc = "Toggle horizontal terminal" })
       vim.keymap.set("n", "<leader>tg", function()
-        lazygit:toggle()
-      end, { desc = "Toggle lazygit" })
+        local Terminal = require("toggleterm.terminal").Terminal
+        local status = Terminal:new({
+          cmd = "git --no-pager status --short --branch",
+          direction = "float",
+          hidden = true,
+        })
+        status:toggle()
+      end, { desc = "Git status (read-only)" })
     end,
   },
   {
@@ -211,19 +328,71 @@ require("lazy").setup({
   },
 })
 
-vim.api.nvim_set_hl(0, "@markup.heading.1.markdown", { fg = "#dc322f", bold = true })
-vim.api.nvim_set_hl(0, "@markup.heading.2.markdown", { fg = "#cb4b16", bold = true })
-vim.api.nvim_set_hl(0, "@markup.heading.3.markdown", { fg = "#d33682", bold = true })
+vim.api.nvim_set_hl(0, "@text.title", { fg = "#2aa198", bold = true })
+vim.api.nvim_set_hl(0, "@markup.heading.1.markdown", { fg = "#2aa198", bold = true })
+vim.api.nvim_set_hl(0, "@markup.heading.2.markdown", { fg = "#268bd2", bold = true })
+vim.api.nvim_set_hl(0, "@markup.heading.3.markdown", { fg = "#6c71c4", bold = true })
+vim.api.nvim_set_hl(0, "@markup.heading.4.markdown", { fg = "#859900", bold = true })
+vim.api.nvim_set_hl(0, "@markup.heading.5.markdown", { fg = "#d33682", bold = true })
+vim.api.nvim_set_hl(0, "@markup.heading.6.markdown", { fg = "#cb4b16", bold = true })
 vim.api.nvim_set_hl(0, "@markup.link.markdown", { fg = "#268bd2", underline = true })
-vim.api.nvim_set_hl(0, "@markup.raw.markdown", { fg = "#859900" })
-vim.api.nvim_set_hl(0, "@markup.emphasis.markdown", { italic = true })
-vim.api.nvim_set_hl(0, "@markup.strong.markdown", { bold = true })
-vim.api.nvim_set_hl(0, "@markup.quote.markdown", { fg = "#93a1a1", italic = true })
+vim.api.nvim_set_hl(0, "@markup.raw.markdown", { fg = "#859900", bold = true })
+vim.api.nvim_set_hl(0, "@markup.list.markdown", { fg = "#93a1a1", bold = true })
 
-vim.api.nvim_set_hl(0, "NeoTreeFloatNormal", { bg = "#073642", fg = "#eee8d5" })
-vim.api.nvim_set_hl(0, "NeoTreeFloatBorder", { bg = "#073642", fg = "#cb4b16" })
-vim.api.nvim_set_hl(0, "NeoTreeFloatTitle", { bg = "#cb4b16", fg = "#fdf6e3", bold = true })
-vim.api.nvim_set_hl(0, "NeoTreeMessage", { fg = "#b58900", bold = true })
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+  pattern = { "*.md", "*.markdown" },
+  callback = function(args)
+    vim.bo[args.buf].filetype = "markdown"
+    pcall(vim.treesitter.start, args.buf, "markdown")
+  end,
+})
+
+local blocked_git_commands = {
+  "commit",
+  "push",
+  "pull",
+  "fetch",
+  "merge",
+  "rebase",
+  "reset",
+  "checkout",
+  "switch",
+  "restore",
+  "cherry-pick",
+  "tag",
+  "branch",
+  "remote",
+  "stash",
+  "submodule",
+  "clone",
+  "init",
+  "add",
+  "rm",
+  "mv",
+}
+
+local function git_guard(args)
+  if not args or #args == 0 then
+    vim.cmd("Git status")
+    return
+  end
+
+  local first = args[1]:lower()
+  if vim.tbl_contains(blocked_git_commands, first) then
+    vim.notify("Blocked: git " .. first .. " is disabled for safety.", vim.log.levels.WARN)
+    return
+  end
+
+  vim.cmd("Git " .. table.concat(args, " "))
+end
+
+vim.api.nvim_create_user_command("Git", function(opts)
+  git_guard(opts.fargs)
+end, { nargs = "*" })
+
+vim.api.nvim_create_user_command("G", function(opts)
+  git_guard(opts.fargs)
+end, { nargs = "*" })
 
 vim.keymap.set("c", "<CR>", function()
   if vim.fn.getcmdtype() == ":" and vim.fn.getcmdline() == "e." then
@@ -260,14 +429,44 @@ vim.lsp.config("clangd", {
     "--background-index",
     "--clang-tidy",
     "--completion-style=detailed",
+    "--header-insertion=never",
   },
   filetypes = { "c", "cpp", "objc", "objcpp" },
   root_markers = { "compile_commands.json", "compile_flags.txt", ".git" },
 })
 
-if vim.fn.executable("clangd") == 1 then
-  vim.lsp.enable("clangd")
-end
+vim.api.nvim_create_autocmd("BufReadPost", {
+  pattern = { "*.c", "*.h", "*.cc", "*.cpp", "*.hpp", "*.cxx", "*.hxx" },
+  callback = function(args)
+    if vim.fn.executable("clangd") ~= 1 then
+      return
+    end
+
+    if vim.lsp.get_clients({ bufnr = args.buf, name = "clangd" })[1] then
+      return
+    end
+
+    local file = vim.api.nvim_buf_get_name(args.buf)
+    local root_dir = vim.fs.root(file, { ".git", "compile_commands.json", "compile_flags.txt" })
+    if not root_dir then
+      root_dir = vim.fn.getcwd()
+    end
+
+    vim.lsp.start({
+      name = "clangd",
+      cmd = {
+        "clangd",
+        "--background-index",
+        "--clang-tidy",
+        "--completion-style=detailed",
+        "--header-insertion=never",
+      },
+      root_dir = root_dir,
+      filetypes = { "c", "cpp", "objc", "objcpp" },
+      capabilities = vim.lsp.protocol.make_client_capabilities(),
+    }, { bufnr = args.buf })
+  end,
+})
 
 vim.lsp.config("pyright", {
   cmd = { "pyright-langserver", "--stdio" },
@@ -302,29 +501,29 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
-vim.keymap.set("n", "<leader>r", function()
-  Snacks.picker.recent()
-end, { desc = "Recent files" })
+vim.keymap.set("n", "<leader>sf", function()
+  Snacks.picker.files()
+end, { desc = "Snacks: files" })
 
--- バッファ一覧
-vim.keymap.set("n", "<leader>b", function()
+vim.keymap.set("n", "<leader>sg", function()
+  Snacks.picker.grep()
+end, { desc = "Snacks: grep" })
+
+vim.keymap.set("n", "<leader>sb", function()
   Snacks.picker.buffers()
-end, { desc = "Buffers" })
+end, { desc = "Snacks: buffers" })
 
--- 通知
-vim.keymap.set("n", "<leader>n", function()
+vim.keymap.set("n", "<leader>sr", function()
+  Snacks.picker.recent()
+end, { desc = "Snacks: recent files" })
+
+vim.keymap.set("n", "<leader>sn", function()
   Snacks.notifier.show_history()
-end, { desc = "Notification history" })
+end, { desc = "Snacks: notification history" })
 
-vim.keymap.set("n", "<leader>N", function()
+vim.keymap.set("n", "<leader>sN", function()
   Snacks.notifier.hide()
-end, { desc = "Clear notifications" })
-
-vim.keymap.set("n", "<leader>c", function()
-  for _, picker in ipairs(Snacks.picker.get()) do
-    Snacks.picker.actions.close(picker)
-  end
-end, { desc = "Close picker" })
+end, { desc = "Snacks: clear notifications" })
 
 -- スクロール
 vim.keymap.set("n", "<C-d>", function()
@@ -342,16 +541,6 @@ end, { desc = "Smooth scroll down 1 line" })
 vim.keymap.set("n", "<C-k>", function()
   require("snacks").scroll(-1)
 end, { desc = "Smooth scroll up 1 line" })
-
--- ファイル検索
-vim.keymap.set("n", "<leader>f", function()
-  Snacks.picker.files()
-end, { desc = "Find files" })
-
--- 検索
-vim.keymap.set("n", "<leader>g", function()
-  Snacks.picker.grep()
-end, { desc = "Grep" })
 
 vim.keymap.set({ "n", "x" }, "<leader>m", "<Plug>(quickhl-manual-this)")
 vim.keymap.set({ "n", "x" }, "<leader>M", "<Plug>(quickhl-manual-reset)")
