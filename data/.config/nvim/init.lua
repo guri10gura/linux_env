@@ -5,9 +5,7 @@ vim.g.maplocalleader = " "
 
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
+    "git", "clone", "--filter=blob:none",
     "https://github.com/folke/lazy.nvim.git",
     "--branch=stable",
     lazypath,
@@ -187,7 +185,13 @@ require("lazy").setup({
     lazy = false,
     build = ":TSUpdate",
     config = function()
-      require("nvim-treesitter.configs").setup({
+      local ok, configs = pcall(require, "nvim-treesitter.configs")
+      if not ok then
+        vim.notify("nvim-treesitter is not available yet; skipping Treesitter setup.", vim.log.levels.WARN)
+        return
+      end
+
+      configs.setup({
         ensure_installed = { "c", "cpp", "python", "markdown", "markdown_inline" },
         auto_install = true,
         highlight = {
@@ -283,9 +287,24 @@ require("lazy").setup({
       Terminal:new({ cmd = "lazygit", dir = "git_dir", direction = "float", hidden = true })
 
       vim.keymap.set("t", "<Esc><Esc>", [[<C-\><C-n>]], { desc = "Exit terminal mode" })
-      vim.keymap.set("n", "<leader>tt", "<cmd>ToggleTerm<cr>", { desc = "Toggle terminal" })
-      vim.keymap.set("n", "<leader>tv", "<cmd>ToggleTerm direction=vertical<cr>", { desc = "Toggle vertical terminal" })
-      vim.keymap.set("n", "<leader>th", "<cmd>ToggleTerm direction=horizontal<cr>", { desc = "Toggle horizontal terminal" })
+      vim.keymap.set("n", "<leader>tv", function()
+        local Terminal = require("toggleterm.terminal").Terminal
+        local term = Terminal:new({
+          direction = "vertical",
+          dir = vim.fn.getcwd(),
+          hidden = false,
+        })
+        term:toggle()
+      end, { desc = "Toggle vertical terminal in current working directory" })
+      vim.keymap.set("n", "<leader>th", function()
+        local Terminal = require("toggleterm.terminal").Terminal
+        local term = Terminal:new({
+          direction = "horizontal",
+          dir = vim.fn.getcwd(),
+          hidden = false,
+        })
+        term:toggle()
+      end, { desc = "Toggle horizontal terminal in current working directory" })
       vim.keymap.set("n", "<leader>tg", function()
         local Terminal = require("toggleterm.terminal").Terminal
         local status = Terminal:new({
@@ -348,27 +367,9 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 })
 
 local blocked_git_commands = {
-  "commit",
-  "push",
-  "pull",
-  "fetch",
-  "merge",
-  "rebase",
-  "reset",
-  "checkout",
-  "switch",
-  "restore",
-  "cherry-pick",
-  "tag",
-  "branch",
-  "remote",
-  "stash",
-  "submodule",
-  "clone",
-  "init",
-  "add",
-  "rm",
-  "mv",
+  "commit", "push", "pull", "fetch", "merge", "rebase", "reset", "checkout", "switch", 
+  "restore", "cherry-pick", "tag", "branch", "remote", "stash", "submodule", "clone",
+  "init", "add", "rm", "mv",
 }
 
 local function git_guard(args)
@@ -554,17 +555,8 @@ vim.keymap.set("n", "<leader>a", function()
   Snacks.picker.treesitter({
     filter = {
       default = {
-        "Class",
-        "Enum",
-        "Field",
-        "Function",
-        "Method",
-        "Module",
-        "Namespace",
-        "Parameter",
-        "Struct",
-        "Trait",
-        "Variable",
+        "Class", "Enum", "Field", "Function", "Method", "Module", 
+        "Namespace", "Parameter", "Struct", "Trait", "Variable",
       },
     },
   })
@@ -579,3 +571,24 @@ vim.keymap.set("n", "<leader>yy", '"+yy', { desc = "Yank line to clipboard" })
 vim.keymap.set("x", "<leader>y", '"+y', { desc = "Yank selection to clipboard" })
 vim.keymap.set("n", "<leader>p", '"+p', { desc = "Paste after cursor" })
 vim.keymap.set("n", "<leader>pp", '"+P', { desc = "Paste before cursor" })
+
+vim.keymap.set("n", "<leader>cp", function()
+  local path = vim.fn.expand("%:p")
+  vim.fn.setreg("+", path)
+  vim.notify("Copied full path: " .. path, vim.log.levels.INFO)
+end, { desc = "Copy full path to clipboard" })
+vim.keymap.set("n", "<leader>cf", function()
+  local file = vim.fn.expand("%:t")
+  vim.fn.setreg("+", file)
+  vim.notify("Copied file name: " .. file, vim.log.levels.INFO)
+end, { desc = "Copy file name to clipboard" })
+vim.keymap.set("n", "<leader>cc", function()
+  local path = vim.fn.expand("%:p:h")
+  if path == "" or path == "." then
+    return
+  end
+
+  vim.cmd("cd " .. vim.fn.fnameescape(path))
+  vim.notify("Changed directory to: " .. path, vim.log.levels.INFO)
+end, { desc = "Change directory to current file directory" })
+
