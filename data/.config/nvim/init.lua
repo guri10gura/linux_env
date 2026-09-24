@@ -40,12 +40,12 @@ require("lazy").setup({
         win = {
           input = {
             keys = {
-              ["<leader>sc"] = { "close", mode = { "n", "i" } },
+              ["<leader>uc"] = { "close", mode = { "n", "i" } },
             },
           },
           list = {
             keys = {
-              ["<leader>sc"] = { "close", mode = { "n", "x" } },
+              ["<leader>uc"] = { "close", mode = { "n", "x" } },
             },
           },
         },
@@ -60,7 +60,7 @@ require("lazy").setup({
     "hedyhli/outline.nvim",
     cmd = { "Outline", "OutlineOpen" },
     keys = {
-      { "<leader>o", "<cmd>Outline<cr>", desc = "Toggle outline" },
+      { "<leader>uo", "<cmd>Outline<cr>", desc = "Toggle outline" },
     },
     opts = {
       outline_window = {
@@ -224,7 +224,7 @@ require("lazy").setup({
     cmd = { "ConformInfo" },
     keys = {
       {
-        "<leader>f",
+        "<leader>=",
         function()
           local mode = vim.fn.mode()
           if mode == "v" or mode == "V" or mode == "\x16" then
@@ -502,27 +502,27 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
-vim.keymap.set("n", "<leader>sf", function()
+vim.keymap.set("n", "<leader>uf", function()
   Snacks.picker.files()
 end, { desc = "Snacks: files" })
 
-vim.keymap.set("n", "<leader>sg", function()
+vim.keymap.set("n", "<leader>ug", function()
   Snacks.picker.grep()
 end, { desc = "Snacks: grep" })
 
-vim.keymap.set("n", "<leader>sb", function()
+vim.keymap.set("n", "<leader>ub", function()
   Snacks.picker.buffers()
 end, { desc = "Snacks: buffers" })
 
-vim.keymap.set("n", "<leader>sr", function()
+vim.keymap.set("n", "<leader>ur", function()
   Snacks.picker.recent()
 end, { desc = "Snacks: recent files" })
 
-vim.keymap.set("n", "<leader>sn", function()
+vim.keymap.set("n", "<leader>un", function()
   Snacks.notifier.show_history()
 end, { desc = "Snacks: notification history" })
 
-vim.keymap.set("n", "<leader>sN", function()
+vim.keymap.set("n", "<leader>uN", function()
   Snacks.notifier.hide()
 end, { desc = "Snacks: clear notifications" })
 
@@ -548,10 +548,10 @@ vim.keymap.set({ "n", "x" }, "<leader>M", "<Plug>(quickhl-manual-reset)")
 vim.keymap.set("n", "<leader>j", "<Plug>(quickhl-cword-toggle)")
 
 -- neo-tree
-vim.keymap.set("n", "<leader>e", "<cmd>Neotree toggle<cr>", { desc = "Toggle file tree" })
-vim.keymap.set("n", "<leader>E", "<cmd>Neotree reveal<cr>", { desc = "Reveal current file in tree" })
+vim.keymap.set("n", "<leader>ue", "<cmd>Neotree toggle<cr>", { desc = "Toggle file tree" })
+vim.keymap.set("n", "<leader>uE", "<cmd>Neotree reveal<cr>", { desc = "Reveal current file in tree" })
 
-vim.keymap.set("n", "<leader>a", function()
+vim.keymap.set("n", "<leader>ua", function()
   Snacks.picker.treesitter({
     filter = {
       default = {
