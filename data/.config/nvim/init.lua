@@ -98,14 +98,7 @@ require("lazy").setup({
       {
         "<leader>gl",
         function()
-          local Terminal = require("toggleterm.terminal").Terminal
-          local term = Terminal:new({
-            cmd = "git --no-pager log --graph --decorate --all --date=short --format='%C(yellow)%h%Creset %s %C(green)(%cr)%Creset'",
-            direction = "float",
-            hidden = true,
-            close_on_exit = false,
-          })
-          term:toggle()
+          vim.cmd("botright terminal git --no-pager log --graph --decorate --all --date=short --oneline")
         end,
         desc = "Git log graph (terminal)",
       },
@@ -260,61 +253,6 @@ require("lazy").setup({
   {
     "t9md/vim-quickhl",
     lazy = false,
-  },
-  {
-    "akinsho/toggleterm.nvim",
-    version = "*",
-    config = function()
-      require("toggleterm").setup({
-        size = function(term)
-          if term.direction == "horizontal" then
-            return 15
-          elseif term.direction == "vertical" then
-            return vim.o.columns * 0.4
-          end
-          return 20
-        end,
-        hide_numbers = true,
-        shade_filetypes = {},
-        shade_terminals = true,
-        shading_factor = 2,
-        start_in_insert = true,
-        persist_size = true,
-        direction = "horizontal",
-      })
-
-      local Terminal = require("toggleterm.terminal").Terminal
-      Terminal:new({ cmd = "lazygit", dir = "git_dir", direction = "float", hidden = true })
-
-      vim.keymap.set("t", "<Esc><Esc>", [[<C-\><C-n>]], { desc = "Exit terminal mode" })
-      vim.keymap.set("n", "<leader>tv", function()
-        local Terminal = require("toggleterm.terminal").Terminal
-        local term = Terminal:new({
-          direction = "vertical",
-          dir = vim.fn.getcwd(),
-          hidden = false,
-        })
-        term:toggle()
-      end, { desc = "Toggle vertical terminal in current working directory" })
-      vim.keymap.set("n", "<leader>th", function()
-        local Terminal = require("toggleterm.terminal").Terminal
-        local term = Terminal:new({
-          direction = "horizontal",
-          dir = vim.fn.getcwd(),
-          hidden = false,
-        })
-        term:toggle()
-      end, { desc = "Toggle horizontal terminal in current working directory" })
-      vim.keymap.set("n", "<leader>tg", function()
-        local Terminal = require("toggleterm.terminal").Terminal
-        local status = Terminal:new({
-          cmd = "git --no-pager status --short --branch",
-          direction = "float",
-          hidden = true,
-        })
-        status:toggle()
-      end, { desc = "Git status (read-only)" })
-    end,
   },
   {
     "nvim-lualine/lualine.nvim",
@@ -548,6 +486,9 @@ vim.keymap.set({ "n", "x" }, "<leader>M", "<Plug>(quickhl-manual-reset)")
 vim.keymap.set("n", "<leader>j", "<Plug>(quickhl-cword-toggle)")
 
 -- neo-tree
+vim.keymap.set("n", "<leader>tt", ":terminal<CR>", { desc = "Open terminal" })
+vim.keymap.set("t", "<Esc><Esc>", [[<C-\><C-n>]], { desc = "Exit terminal mode" })
+
 vim.keymap.set("n", "<leader>ue", "<cmd>Neotree toggle<cr>", { desc = "Toggle file tree" })
 vim.keymap.set("n", "<leader>uE", "<cmd>Neotree reveal<cr>", { desc = "Reveal current file in tree" })
 
