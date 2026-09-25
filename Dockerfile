@@ -24,10 +24,15 @@ RUN apt-get update && apt-get install -y \
     ripgrep \
     tmux \
     sudo \
+    unzip \
     && python3 -m pip install --break-system-packages black \
     && npm install --global pyright prettier \
+    && curl -fsSL "https://github.com/JohnnyMorganz/StyLua/releases/latest/download/stylua-linux-x86_64.zip" \
+        -o /tmp/stylua.zip \
+    && unzip -o /tmp/stylua.zip -d /tmp \
+    && install -m 755 /tmp/stylua /usr/local/bin/stylua \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/lib/apt/lists/* /tmp/stylua.zip /tmp/stylua \
     && curl -fsSL "https://github.com/neovim/neovim/releases/download/v${NEOVIM_VERSION}/nvim-linux-x86_64.tar.gz" \
         | tar -xz -C /opt \
     && ln -s "/opt/nvim-linux-x86_64/bin/nvim" /usr/local/bin/nvim

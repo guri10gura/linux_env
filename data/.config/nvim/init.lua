@@ -5,7 +5,9 @@ vim.g.maplocalleader = " "
 
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
-    "git", "clone", "--filter=blob:none",
+    "git",
+    "clone",
+    "--filter=blob:none",
     "https://github.com/folke/lazy.nvim.git",
     "--branch=stable",
     lazypath,
@@ -28,6 +30,9 @@ require("lazy").setup({
     "folke/snacks.nvim",
     priority = 1000,
     lazy = false,
+    config = function(_, opts)
+      require("snacks").setup(opts)
+    end,
     opts = {
       bigfile = { enabled = true },
       explorer = { enabled = true },
@@ -221,14 +226,17 @@ require("lazy").setup({
         function()
           local mode = vim.fn.mode()
           if mode == "v" or mode == "V" or mode == "\x16" then
-            if vim.bo.filetype == "markdown" then
+            if vim.bo.filetype == "markdown" or vim.bo.filetype == "lua" then
               require("conform").format({ async = true, lsp_fallback = true })
               return
             end
 
+            local end_col = vim.fn.col("'>") - 1
+            local end_line = vim.fn.line("'>")
+            local line_len = vim.fn.strlen(vim.fn.getline(end_line))
             local range = {
               start = { vim.fn.line("'<"), 0 },
-              ["end"] = { vim.fn.line("'>"), vim.fn.col("'>") - 1 },
+              ["end"] = { end_line, math.max(0, math.min(end_col, line_len)) },
             }
             require("conform").format({ async = true, lsp_fallback = true, range = range })
             return
@@ -246,7 +254,10 @@ require("lazy").setup({
         cpp = { "clang_format" },
         c = { "clang_format" },
         markdown = { "prettier" },
+        lua = { "stylua" },
       },
+      -- Conform: don't enable global format-on-save by default. Use the existing
+      -- <leader>= mapping to format manually. Stylua will be used for lua files.
       format_on_save = false,
     },
   },
@@ -305,9 +316,27 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 })
 
 local blocked_git_commands = {
-  "commit", "push", "pull", "fetch", "merge", "rebase", "reset", "checkout", "switch", 
-  "restore", "cherry-pick", "tag", "branch", "remote", "stash", "submodule", "clone",
-  "init", "add", "rm", "mv",
+  "commit",
+  "push",
+  "pull",
+  "fetch",
+  "merge",
+  "rebase",
+  "reset",
+  "checkout",
+  "switch",
+  "restore",
+  "cherry-pick",
+  "tag",
+  "branch",
+  "remote",
+  "stash",
+  "submodule",
+  "clone",
+  "init",
+  "add",
+  "rm",
+  "mv",
 }
 
 local function git_guard(args)
@@ -357,7 +386,7 @@ vim.opt.cursorline = true
 vim.keymap.set("i", "{} ", "{}<Left>", { noremap = true, desc = "Insert empty braces" })
 vim.keymap.set("i", "[] ", "[]<Left>", { noremap = true, desc = "Insert empty brackets" })
 vim.keymap.set("i", "() ", "()<Left>", { noremap = true, desc = "Insert empty parentheses" })
-vim.keymap.set("i", "\"\" ", "\"\"<Left>", { noremap = true, desc = "Insert empty double quotes" })
+vim.keymap.set("i", '"" ', '""<Left>', { noremap = true, desc = "Insert empty double quotes" })
 vim.keymap.set("i", "'' ", "''<Left>", { noremap = true, desc = "Insert empty single quotes" })
 vim.keymap.set("i", "`` ", "``<Left>", { noremap = true, desc = "Insert empty backticks" })
 vim.keymap.set("i", "<> ", "<><Left>", { noremap = true, desc = "Insert empty angle brackets" })
@@ -496,8 +525,17 @@ vim.keymap.set("n", "<leader>ua", function()
   Snacks.picker.treesitter({
     filter = {
       default = {
-        "Class", "Enum", "Field", "Function", "Method", "Module", 
-        "Namespace", "Parameter", "Struct", "Trait", "Variable",
+        "Class",
+        "Enum",
+        "Field",
+        "Function",
+        "Method",
+        "Module",
+        "Namespace",
+        "Parameter",
+        "Struct",
+        "Trait",
+        "Variable",
       },
     },
   })
@@ -532,4 +570,3 @@ vim.keymap.set("n", "<leader>cc", function()
   vim.cmd("cd " .. vim.fn.fnameescape(path))
   vim.notify("Changed directory to: " .. path, vim.log.levels.INFO)
 end, { desc = "Change directory to current file directory" })
-

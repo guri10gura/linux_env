@@ -21,6 +21,8 @@ services:
       - ./data/.gitconfig:/home/user/.gitconfig:ro
       - ./data/.bashrc:/home/user/.bashrc:ro
       - ./data/.tmux.conf:/home/user/.tmux.conf:ro
+      # Stylua の設定をホーム直下に配置
+      - ./data/.stylua.toml:/home/user/.stylua.toml:ro
 
     tty: true
     stdin_open: true

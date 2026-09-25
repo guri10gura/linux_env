@@ -93,6 +93,7 @@ Ensure-Link -Source (Join-Path $rootDir 'data\.cache\nvim') -Destination (Join-P
 Ensure-Link -Source (Join-Path $rootDir 'data\.gitconfig') -Destination (Join-Path $hostHome '.gitconfig') -Kind file
 Ensure-Link -Source (Join-Path $rootDir 'data\.bashrc') -Destination (Join-Path $hostHome '.bashrc') -Kind file
 Ensure-Link -Source (Join-Path $rootDir 'data\.tmux.conf') -Destination (Join-Path $hostHome '.tmux.conf') -Kind file
+Ensure-Link -Source (Join-Path $rootDir 'data\.stylua.toml') -Destination (Join-Path $hostHome '.stylua.toml') -Kind file
 
 Write-Host ""
 Write-Host "[ok] Windows host setup completed."
@@ -109,3 +110,4 @@ Write-Host "  $env:TEMP\nvim -> $rootDir\data\.cache\nvim"
 Write-Host "  $hostHome\.gitconfig -> $rootDir\data\.gitconfig"
 Write-Host "  $hostHome\.bashrc -> $rootDir\data\.bashrc"
 Write-Host "  $hostHome\.tmux.conf -> $rootDir\data\.tmux.conf"
+Write-Host "  $hostHome\.stylua.toml -> $rootDir\data\.stylua.toml"

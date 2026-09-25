@@ -44,6 +44,7 @@ ensure_link "${ROOT_DIR}/data/.cache/nvim" "${HOST_HOME}/.cache/nvim"
 ensure_link "${ROOT_DIR}/data/.gitconfig" "${HOST_HOME}/.gitconfig"
 ensure_link "${ROOT_DIR}/data/.bashrc" "${HOST_HOME}/.bashrc"
 ensure_link "${ROOT_DIR}/data/.tmux.conf" "${HOST_HOME}/.tmux.conf"
+ensure_link "${ROOT_DIR}/data/.stylua.toml" "${HOST_HOME}/.stylua.toml"
 
 cat <<EOF
 [ok] Host setup completed.
@@ -60,4 +61,5 @@ Mounted-equivalent paths:
   ${HOST_HOME}/.gitconfig -> ${ROOT_DIR}/data/.gitconfig
   ${HOST_HOME}/.bashrc -> ${ROOT_DIR}/data/.bashrc
   ${HOST_HOME}/.tmux.conf -> ${ROOT_DIR}/data/.tmux.conf
+  ${HOST_HOME}/.stylua.toml -> ${ROOT_DIR}/data/.stylua.toml
 EOF
