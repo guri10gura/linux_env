@@ -148,6 +148,42 @@ require("lazy").setup({
     },
   },
   {
+    "windwp/nvim-autopairs",
+    event = "InsertEnter",
+    opts = {
+      map_bs = true,
+      map_cr = true,
+      fast_wrap = {
+        map = "<M-e>",
+      },
+    },
+  },
+  {
+    "numToStr/Comment.nvim",
+    event = "VeryLazy",
+    opts = {
+      mappings = {
+        basic = true,
+        extra = true,
+      },
+    },
+    config = function(_, opts)
+      require("Comment").setup(opts)
+      vim.keymap.set("n", "<leader>/", "<Plug>(comment_toggle_linewise_current)", {
+        desc = "Toggle line comment",
+      })
+      vim.keymap.set("x", "<leader>/", "<Plug>(comment_toggle_linewise_visual)", {
+        desc = "Toggle selection comment",
+      })
+      vim.keymap.set("n", "<leader>//", "<Plug>(comment_toggle_blockwise_current)", {
+        desc = "Toggle block comment",
+      })
+      vim.keymap.set("x", "<leader>//", "<Plug>(comment_toggle_blockwise_visual)", {
+        desc = "Toggle selection block comment",
+      })
+    end,
+  },
+  {
     "nvim-neo-tree/neo-tree.nvim",
     branch = "v3.x",
     dependencies = {
@@ -283,14 +319,8 @@ require("lazy").setup({
   performance = {
     rtp = {
       disabled_plugins = {
-        "gzip",
-        "matchit",
-        "matchparen",
-        "netrwPlugin",
-        "tarPlugin",
-        "tohtml",
-        "tutor",
-        "zipPlugin",
+        "gzip", "matchit", "matchparen", "netrwPlugin",
+        "tarPlugin", "tohtml", "tutor", "zipPlugin",
       },
     },
   },
@@ -316,27 +346,9 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
 })
 
 local blocked_git_commands = {
-  "commit",
-  "push",
-  "pull",
-  "fetch",
-  "merge",
-  "rebase",
-  "reset",
-  "checkout",
-  "switch",
-  "restore",
-  "cherry-pick",
-  "tag",
-  "branch",
-  "remote",
-  "stash",
-  "submodule",
-  "clone",
-  "init",
-  "add",
-  "rm",
-  "mv",
+  "commit", "push", "pull", "fetch", "merge", "rebase", "reset",
+  "checkout", "switch", "restore", "cherry-pick", "tag", "branch",
+  "remote", "stash", "submodule", "clone", "init", "add", "rm", "mv",
 }
 
 local function git_guard(args)
@@ -382,14 +394,6 @@ vim.opt.smartcase = true
 vim.opt.termguicolors = true
 vim.opt.signcolumn = "yes"
 vim.opt.cursorline = true
-
-vim.keymap.set("i", "{} ", "{}<Left>", { noremap = true, desc = "Insert empty braces" })
-vim.keymap.set("i", "[] ", "[]<Left>", { noremap = true, desc = "Insert empty brackets" })
-vim.keymap.set("i", "() ", "()<Left>", { noremap = true, desc = "Insert empty parentheses" })
-vim.keymap.set("i", '"" ', '""<Left>', { noremap = true, desc = "Insert empty double quotes" })
-vim.keymap.set("i", "'' ", "''<Left>", { noremap = true, desc = "Insert empty single quotes" })
-vim.keymap.set("i", "`` ", "``<Left>", { noremap = true, desc = "Insert empty backticks" })
-vim.keymap.set("i", "<> ", "<><Left>", { noremap = true, desc = "Insert empty angle brackets" })
 
 vim.lsp.config("clangd", {
   cmd = {
@@ -525,17 +529,9 @@ vim.keymap.set("n", "<leader>ua", function()
   Snacks.picker.treesitter({
     filter = {
       default = {
-        "Class",
-        "Enum",
-        "Field",
-        "Function",
-        "Method",
-        "Module",
-        "Namespace",
-        "Parameter",
-        "Struct",
-        "Trait",
-        "Variable",
+        "Class", "Enum", "Field", "Function", "Method",
+        "Module", "Namespace", "Parameter", "Struct",
+        "Trait", "Variable",
       },
     },
   })
