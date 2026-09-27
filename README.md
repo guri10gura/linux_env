@@ -203,8 +203,8 @@ data/
 | 18  | `<leader>yy`, `<leader>y`, `<leader>p`, `<leader>pp`                               | clipboad系               | 行/選択範囲のコピーと貼り付け                                  |
 | 19  | `<leader>cp`, `<leader>cf`, `<leader>cc`                                           | 自前のコマンド           | ファイルパス、ファイル名、ディレクトリのコピーと移動           |
 | 20  | `:<CR>` の特別処理 (`:e.`)                                                         | 自前のコマンド           | `:e.` で Neo-tree を開く                                       |
+| 21  | `<Tab>`                                                                            | blink.cmp                | 表示中の補完候補を確定                                         |
 
 ## TODO
 - trouble.nvim のキーバインドが有効か？ xx, xd, xw, xl など意味があるか 要確認。
 - バッファのパスコピーのキーバインドを検討
-

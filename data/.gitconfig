@@ -11,3 +11,5 @@
 	name = Your Name
 [core]
 	editor = nvim
+[init]
+	defaultBranch = main
