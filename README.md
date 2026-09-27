@@ -169,6 +169,7 @@ data/
 | nvim-lualine/lualine.nvim        | ステータスライン表示。現在のモードやファイル情報を表示する。             |
 | kylechui/nvim-surround           | 選択範囲を括弧やタグで囲む補助機能を提供する。                           |
 | windwp/nvim-autopairs            | 括弧の自動補完                                                           |
+| numToStr/Comment.nvim            | 行・ブロックコメントのトグル操作を提供する。                             |
 
 ### プラグイン候補
 
@@ -177,34 +178,33 @@ data/
 | stevearc/overseer.nvim   | タスク実行管理。ビルドやテスト、コマンドの実行結果を一覧で管理する。 | 低     |
 | stevearc/aerial.nvim     | アウトライン（別実装の検討）                                         | 低     |
 | nvim-lsp-file-operations | ファイル操作のLSP連携                                                | 高     |
-| numToStr/Comment.nvim    | コメント操作                                                         | 高     |
 
 ## キーバインド
 
 | No. | キーバインド                                                                       | 対象プラグイン           | 処理内容                                                       |
 | --- | ---------------------------------------------------------------------------------- | ------------------------ | -------------------------------------------------------------- |
-| 1   | `s`                                                                                | leap.nvim                | 高速なジャンプ（ノーマル/可視/オペラトールモード）             |
-| 2   | `S`                                                                                | leap.nvim                | ウィンドウ内からのジャンプ                                     |
-| 3   | `<leader>uo`                                                                       | outline.nvim             | アウトラインの表示切替                                         |
-| 4   | `<leader>xx`, `<leader>xw`, `<leader>xd`, `<leader>xq`, `<leader>xl`, `gR`         | trouble.nvim             | 診断・クイックフィックス・ロケーションリスト・参照の表示切替   |
+| 1   | `<leader>uo`                                                                       | outline.nvim             | アウトラインの表示切替                                         |
+| 2   | `<leader>uf`, `<leader>ug`, `<leader>ub`, `<leader>ur`, `<leader>un`, `<leader>uN` | snacks.nvim              | ファイル検索、Grep、バッファ一覧、最近開いたファイル、通知履歴 |
+| 3   | `<leader>ue`, `<leader>uE`                                                         | neo-tree.nvim            | ファイルツリーの表示切替と現在ファイルの展開                   |
+| 4   | `<leader>ua`                                                                       | snacks.nvim + Treesitter | シンボル一覧の検索とジャンプ                                   |
 | 5   | `<leader>gs`, `<leader>gb`, `<leader>gl`                                           | vim-fugitive             | Git ステータス、Blame、ログ表示                                |
 | 6   | `<leader>gd`, `<leader>gD`, `<leader>gh`, `<leader>gH`                             | diffview.nvim            | 差分表示、履歴表示                                             |
-| 7   | `<leader>=`                                                                        | conform.nvim             | バッファまたは選択範囲の整形                                   |
-| 8   | `gd`, `gD`, `gr`, `K`, `<leader>lr`, `<leader>la`, `<leader>lf`                    | nvim LSP                 | 定義・参照・ホバー・リネーム・コードアクション・整形           |
-| 9   | `<leader>uf`, `<leader>ug`, `<leader>ub`, `<leader>ur`, `<leader>un`, `<leader>uN` | snacks.nvim              | ファイル検索、Grep、バッファ一覧、最近開いたファイル、通知履歴 |
-| 10  | `<leader>ue`, `<leader>uE`                                                         | neo-tree.nvim            | ファイルツリーの表示切替と現在ファイルの展開                   |
-| 11  | `<leader>ua`                                                                       | snacks.nvim + Treesitter | シンボル一覧の検索とジャンプ                                   |
+| 7   | `<leader>xx`, `<leader>xw`, `<leader>xd`, `<leader>xq`, `<leader>xl`, `gR`         | trouble.nvim             | 診断・クイックフィックス・ロケーションリスト・参照の表示切替   |
+| 8   | `s`                                                                                | leap.nvim                | 高速なジャンプ（ノーマル/可視/オペラトールモード）             |
+| 9   | `S`                                                                                | leap.nvim                | ウィンドウ内からのジャンプ                                     |
+| 10  | `<leader>=`                                                                        | conform.nvim             | バッファまたは選択範囲の整形                                   |
+| 11  | `gd`, `gD`, `gr`, `K`, `<leader>lr`, `<leader>la`, `<leader>lf`                    | nvim LSP                 | 定義・参照・ホバー・リネーム・コードアクション・整形           |
 | 12  | `<C-d>`, `<C-u>`, `<C-j>`, `<C-k>`                                                 | snacks.nvim              | スムーズスクロール                                             |
 | 13  | `<leader>m`, `<leader>M`, `<leader>j`                                              | vim-quickhl              | ハイライトの強調・リセット・単語ハイライト                     |
 | 14  | `<leader>tt`                                                                       | neo-tree/terminal        | ターミナルの開閉                                               |
 | 15  | `<Esc><Esc>`                                                                       | terminal mode            | ターミナルからの抜け出し                                       |
 | 16  | `<C-q>`                                                                            | terminal互換             | ブロック選択用の Ctrl-v 代替                                   |
-| 17  | `<leader>yy`, `<leader>y`, `<leader>p`, `<leader>pp`                               | clipboad系               | 行/選択範囲のコピーと貼り付け                                  |
-| 18  | `<leader>cp`, `<leader>cf`, `<leader>cc`                                           | 自前のコマンド           | ファイルパス、ファイル名、ディレクトリのコピーと移動           |
-| 19  | `{} `, `[] `, `() `, `"" `, `'' `, ```` ``, `<> `                                  | 自前の挿入補助           | 空の括弧や引用符を挿入してカーソルを中央に置く                 |
+| 17  | `<leader>/`, `<leader>//`                                                          | Comment.nvim             | 行コメント/ブロックコメントのトグル                             |
+| 18  | `<leader>yy`, `<leader>y`, `<leader>p`, `<leader>pp`                               | clipboad系               | 行/選択範囲のコピーと貼り付け                                  |
+| 19  | `<leader>cp`, `<leader>cf`, `<leader>cc`                                           | 自前のコマンド           | ファイルパス、ファイル名、ディレクトリのコピーと移動           |
 | 20  | `:<CR>` の特別処理 (`:e.`)                                                         | 自前のコマンド           | `:e.` で Neo-tree を開く                                       |
 
 ## TODO
-
 - trouble.nvim のキーバインドが有効か？ xx, xd, xw, xl など意味があるか 要確認。
 - バッファのパスコピーのキーバインドを検討
+
