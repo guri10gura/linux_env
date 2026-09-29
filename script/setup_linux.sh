@@ -8,8 +8,7 @@ mkdir -p \
   "${ROOT_DIR}/data/.config/nvim" \
   "${ROOT_DIR}/data/.local/share/nvim" \
   "${ROOT_DIR}/data/.local/state/nvim" \
-  "${ROOT_DIR}/data/.cache/nvim" \
-  "${ROOT_DIR}/host"
+  "${ROOT_DIR}/data/.cache/nvim"
 
 ensure_link() {
   local src="$1"
@@ -53,7 +52,6 @@ Project root: ${ROOT_DIR}
 Host home: ${HOST_HOME}
 
 Mounted-equivalent paths:
-  ${HOST_HOME}/host -> ${ROOT_DIR}/host
   ${HOST_HOME}/.config/nvim -> ${ROOT_DIR}/data/.config/nvim
   ${HOST_HOME}/.local/share/nvim -> ${ROOT_DIR}/data/.local/share/nvim
   ${HOST_HOME}/.local/state/nvim -> ${ROOT_DIR}/data/.local/state/nvim

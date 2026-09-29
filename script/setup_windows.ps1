@@ -20,8 +20,7 @@ $dirsToCreate = @(
     (Join-Path $rootDir 'data\.config\nvim'),
     (Join-Path $rootDir 'data\.local\share\nvim'),
     (Join-Path $rootDir 'data\.local\state\nvim'),
-    (Join-Path $rootDir 'data\.cache\nvim'),
-    (Join-Path $rootDir 'host')
+    (Join-Path $rootDir 'data\.cache\nvim')
 )
 
 foreach ($dir in $dirsToCreate) {
@@ -85,7 +84,6 @@ Ensure-Directory (Join-Path $hostHome '.local\share')
 Ensure-Directory (Join-Path $hostHome '.local\state')
 Ensure-Directory (Join-Path $hostHome '.cache')
 
-Ensure-Link -Source (Join-Path $rootDir 'host') -Destination (Join-Path $hostHome 'host') -Kind dir
 Ensure-Link -Source (Join-Path $rootDir 'data\.config\nvim') -Destination (Join-Path $localAppData 'nvim') -Kind dir
 Ensure-Link -Source (Join-Path $rootDir 'data\.local\share\nvim') -Destination (Join-Path $localAppData 'nvim-data') -Kind dir
 Ensure-Link -Source (Join-Path $rootDir 'data\.local\state\nvim') -Destination (Join-Path $localAppData 'nvim-data\nvim') -Kind dir
@@ -102,7 +100,6 @@ Write-Host "Project root: $rootDir"
 Write-Host "Host home: $hostHome"
 Write-Host ""
 Write-Host "Equivalent paths:"
-Write-Host "  $hostHome\host -> $rootDir\host"
 Write-Host "  $localAppData\nvim -> $rootDir\data\.config\nvim"
 Write-Host "  $localAppData\nvim-data -> $rootDir\data\.local\share\nvim"
 Write-Host "  $localAppData\nvim-data\nvim -> $rootDir\data\.local\state\nvim"
