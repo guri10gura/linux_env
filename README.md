@@ -151,7 +151,7 @@ data/
 | -------------------------------- | ------------------------------------------------------------------------ |
 | folke/lazy.nvim                  | プラグインマネージャー。依存関係管理と遅延読み込みを行う。               |
 | folke/snacks.nvim                | ピッカー、通知、入力支援などをまとめて提供するユーティリティ群。         |
-| altercation/vim-colors-solarized | Solarized カラースキーム。ダークテーマを適用する。                       |
+| lifepillar/vim-solarized8        | truecolor 対応の Solarized カラースキーム。ダークテーマを適用する。      |
 | andyg/leap.nvim                  | 高速なカーソル移動。`s` で単語や位置にジャンプする（Codeberg 経由）。    |
 | hedyhli/outline.nvim             | シンボル一覧をアウトラインとして表示し、関数やクラスの見通しをよくする。 |
 | folke/trouble.nvim               | 診断ビューを強化                                                         |
@@ -162,7 +162,7 @@ data/
 | nvim-lua/plenary.nvim            | 多くのプラグインが依存するユーティリティライブラリ                       |
 | MunifTanjim/nui.nvim             | UI コンポーネントライブラリ（neo-tree などが利用）                       |
 | nvim-tree/nvim-web-devicons      | ファイルアイコン表示用のアイコンセット                                   |
-| nvim-treesitter/nvim-treesitter  | 構文解析とハイライト。C/C++/Python/Markdown などの構文強調を提供する。   |
+| nvim-treesitter/nvim-treesitter  | 構文解析とインデントを提供する。色付けは Vim syntax を使用する。         |
 | m-demare/hlargs.nvim             | 関数や引数のハイライトを強化する。                                       |
 | stevearc/conform.nvim            | フォーマッタラッパー（stylua などを利用）                                |
 | t9md/vim-quickhl                 | ハイライト強調の補助。検索や参照位置の可視化に使う。                     |

@@ -10,6 +10,7 @@ vim.filetype.add({
     mqh = "cpp",
   },
 })
+vim.cmd("syntax enable")
 
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -26,16 +27,14 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
   {
-    "altercation/vim-colors-solarized",
+    "https://codeberg.org/lifepillar/vim-solarized8",
+    branch = "neovim",
     lazy = false,
     priority = 1000,
     config = function()
       vim.o.background = "dark"
-      local is_windows = vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1
-      vim.opt.termguicolors = not is_windows
-      vim.g.solarized_termcolors = is_windows and 16 or 256
-      vim.cmd.colorscheme("solarized")
-      vim.api.nvim_set_hl(0, "Normal", { fg = "#839496", bg = "#002b36" })
+      vim.opt.termguicolors = true
+      vim.cmd.colorscheme("solarized8")
     end,
   },
   {
@@ -240,10 +239,7 @@ require("lazy").setup({
       configs.setup({
         ensure_installed = { "c", "cpp", "python", "markdown", "markdown_inline" },
         auto_install = true,
-        highlight = {
-          enable = true,
-          additional_vim_regex_highlighting = { "cpp" },
-        },
+        highlight = { enable = false },
         indent = { enable = true },
       })
     end,
@@ -326,8 +322,8 @@ require("lazy").setup({
 }, {
   change_detection = { enabled = false, notify = false },
   checker = { enabled = false },
-  install = { colorscheme = { "solarized", "habamax" } },
-  lockfile = vim.fn.stdpath("state") .. "/nvim/lazy-lock.json",
+  install = { colorscheme = { "solarized8", "habamax" } },
+  lockfile = vim.fn.stdpath("state") .. "/lazy-lock.json",
   performance = {
     rtp = {
       disabled_plugins = {
@@ -336,25 +332,6 @@ require("lazy").setup({
       },
     },
   },
-})
-
-vim.api.nvim_set_hl(0, "@text.title", { fg = "#2aa198", bold = true })
-vim.api.nvim_set_hl(0, "@markup.heading.1.markdown", { fg = "#b58900", bold = true })
-vim.api.nvim_set_hl(0, "@markup.heading.2.markdown", { fg = "#cb4b16", bold = true })
-vim.api.nvim_set_hl(0, "@markup.heading.3.markdown", { fg = "#dc322f", bold = true })
-vim.api.nvim_set_hl(0, "@markup.heading.4.markdown", { fg = "#d33682", bold = true })
-vim.api.nvim_set_hl(0, "@markup.heading.5.markdown", { fg = "#6c71c4", bold = true })
-vim.api.nvim_set_hl(0, "@markup.heading.6.markdown", { fg = "#268bd2", bold = true })
-vim.api.nvim_set_hl(0, "@markup.link.markdown", { fg = "#268bd2", underline = true })
-vim.api.nvim_set_hl(0, "@markup.raw.markdown", { fg = "#859900", bold = true })
-vim.api.nvim_set_hl(0, "@markup.list.markdown", { fg = "#93a1a1", bold = true })
-
-vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-  pattern = { "*.md", "*.markdown" },
-  callback = function(args)
-    vim.bo[args.buf].filetype = "markdown"
-    pcall(vim.treesitter.start, args.buf, "markdown")
-  end,
 })
 
 local blocked_git_commands = {
