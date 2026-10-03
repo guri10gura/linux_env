@@ -31,7 +31,9 @@ require("lazy").setup({
     priority = 1000,
     config = function()
       vim.o.background = "dark"
-      vim.g.solarized_termcolors = 256
+      local is_windows = vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1
+      vim.opt.termguicolors = not is_windows
+      vim.g.solarized_termcolors = is_windows and 16 or 256
       vim.cmd.colorscheme("solarized")
       vim.api.nvim_set_hl(0, "Normal", { fg = "#839496", bg = "#002b36" })
     end,
