@@ -2,6 +2,14 @@ local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
+vim.opt.termguicolors = true
+
+vim.filetype.add({
+  extension = {
+    mq5 = "cpp",
+    mqh = "cpp",
+  },
+})
 
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -23,6 +31,10 @@ require("lazy").setup({
     priority = 1000,
     config = function()
       vim.o.background = "dark"
+      vim.g.solarized_termtrans = 0
+      if vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1 then
+        vim.g.solarized_termcolors = 256
+      end
       vim.cmd.colorscheme("solarized")
     end,
   },
@@ -230,7 +242,7 @@ require("lazy").setup({
         auto_install = true,
         highlight = {
           enable = true,
-          additional_vim_regex_highlighting = false,
+          additional_vim_regex_highlighting = { "cpp" },
         },
         indent = { enable = true },
       })
@@ -391,7 +403,6 @@ vim.opt.tabstop = 4
 vim.opt.smartindent = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
-vim.opt.termguicolors = true
 vim.opt.signcolumn = "yes"
 vim.opt.cursorline = true
 
