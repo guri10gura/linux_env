@@ -2,6 +2,7 @@ local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
+vim.opt.termguicolors = true
 
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -23,7 +24,9 @@ require("lazy").setup({
     priority = 1000,
     config = function()
       vim.o.background = "dark"
+      vim.g.solarized_termcolors = 256
       vim.cmd.colorscheme("solarized")
+      vim.api.nvim_set_hl(0, "Normal", { fg = "#839496", bg = "#002b36" })
     end,
   },
   {
@@ -327,12 +330,12 @@ require("lazy").setup({
 })
 
 vim.api.nvim_set_hl(0, "@text.title", { fg = "#2aa198", bold = true })
-vim.api.nvim_set_hl(0, "@markup.heading.1.markdown", { fg = "#2aa198", bold = true })
-vim.api.nvim_set_hl(0, "@markup.heading.2.markdown", { fg = "#268bd2", bold = true })
-vim.api.nvim_set_hl(0, "@markup.heading.3.markdown", { fg = "#6c71c4", bold = true })
-vim.api.nvim_set_hl(0, "@markup.heading.4.markdown", { fg = "#859900", bold = true })
-vim.api.nvim_set_hl(0, "@markup.heading.5.markdown", { fg = "#d33682", bold = true })
-vim.api.nvim_set_hl(0, "@markup.heading.6.markdown", { fg = "#cb4b16", bold = true })
+vim.api.nvim_set_hl(0, "@markup.heading.1.markdown", { fg = "#b58900", bold = true })
+vim.api.nvim_set_hl(0, "@markup.heading.2.markdown", { fg = "#cb4b16", bold = true })
+vim.api.nvim_set_hl(0, "@markup.heading.3.markdown", { fg = "#dc322f", bold = true })
+vim.api.nvim_set_hl(0, "@markup.heading.4.markdown", { fg = "#d33682", bold = true })
+vim.api.nvim_set_hl(0, "@markup.heading.5.markdown", { fg = "#6c71c4", bold = true })
+vim.api.nvim_set_hl(0, "@markup.heading.6.markdown", { fg = "#268bd2", bold = true })
 vim.api.nvim_set_hl(0, "@markup.link.markdown", { fg = "#268bd2", underline = true })
 vim.api.nvim_set_hl(0, "@markup.raw.markdown", { fg = "#859900", bold = true })
 vim.api.nvim_set_hl(0, "@markup.list.markdown", { fg = "#93a1a1", bold = true })
@@ -391,7 +394,6 @@ vim.opt.tabstop = 4
 vim.opt.smartindent = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
-vim.opt.termguicolors = true
 vim.opt.signcolumn = "yes"
 vim.opt.cursorline = true
 
