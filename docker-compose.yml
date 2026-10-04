@@ -6,6 +6,8 @@ services:
         UID: ${UID:-1000}
         GID: ${GID:-1000}
     container_name: linux_container
+    ports:
+      - "127.0.0.1:8080:8080"
     volumes:
       # ホストのホームディレクトリをコンテナの ~/host にバインド
       - ${HOME}:/home/user/host

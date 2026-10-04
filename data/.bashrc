@@ -101,6 +101,7 @@ alias l='ls -CF'
 alias vi='nvim'
 alias vim='nvim'
 
+export LANG=C.UTF-8
 export PATH="$HOME/.local/bin:$PATH"
 
 # Add an "alert" alias for long running commands.  Use like so:

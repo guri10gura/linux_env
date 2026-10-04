@@ -45,6 +45,21 @@ dockerコンテナを実行することで環境を利用できる
 $ docker exec -it linux_env shell
 ```
 
+### SSH 接続経由で Markdown プレビューを表示する
+
+Windows のブラウザーで Markdown プレビューを表示するには、Windows から Linux への SSH 接続でポート転送が必要となる。<br>
+Docker のプレビューポートは、Linux 側の `127.0.0.1:8080` のみに公開される。
+
+```powershell
+> ssh -L 8080:127.0.0.1:8080 <linux-user>@<linux-host>
+```
+
+既存の SSH 接続設定を使う場合は、Windows の `~/.ssh/config` で対象ホストの設定に次の行を追加します。
+
+```sshconfig
+LocalForward 8080 127.0.0.1:8080
+```
+
 ## Dockerを利用しない場合(Linux)
 
 ### 準備
@@ -205,6 +220,3 @@ data/
 | 20  | `:<CR>` の特別処理 (`:e.`)                                                         | 自前のコマンド           | `:e.` で Neo-tree を開く                                       |
 | 21  | `<Tab>`                                                                            | blink.cmp                | 表示中の補完候補を確定                                         |
 
-## TODO
-- trouble.nvim のキーバインドが有効か？ xx, xd, xw, xl など意味があるか 要確認。
-- バッファのパスコピーのキーバインドを検討

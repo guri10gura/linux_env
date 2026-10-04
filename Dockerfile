@@ -17,8 +17,10 @@ RUN apt-get update && apt-get install -y \
     cmake \
     curl \
     git \
+    graphviz \
     nodejs \
     npm \
+    plantuml \
     python3 \
     python3-pip \
     ripgrep \
