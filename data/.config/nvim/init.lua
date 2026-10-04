@@ -10,6 +10,7 @@ vim.filetype.add({
     mqh = "cpp",
   },
 })
+vim.cmd("syntax enable")
 
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -26,14 +27,14 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
   {
-    "altercation/vim-colors-solarized",
+    "https://codeberg.org/lifepillar/vim-solarized8",
+    branch = "neovim",
     lazy = false,
     priority = 1000,
     config = function()
       vim.o.background = "dark"
-      vim.opt.termguicolors = false
-      vim.g.solarized_termcolors = 256
-      vim.cmd.colorscheme("solarized")
+      vim.opt.termguicolors = true
+      vim.cmd.colorscheme("solarized8")
     end,
   },
   {
@@ -238,10 +239,7 @@ require("lazy").setup({
       configs.setup({
         ensure_installed = { "c", "cpp", "python", "markdown", "markdown_inline" },
         auto_install = true,
-        highlight = {
-          enable = true,
-          additional_vim_regex_highlighting = { "cpp" },
-        },
+        highlight = { enable = false },
         indent = { enable = true },
       })
     end,
@@ -324,8 +322,8 @@ require("lazy").setup({
 }, {
   change_detection = { enabled = false, notify = false },
   checker = { enabled = false },
-  install = { colorscheme = { "solarized", "habamax" } },
-  lockfile = vim.fn.stdpath("state") .. "/nvim/lazy-lock.json",
+  install = { colorscheme = { "solarized8", "habamax" } },
+  lockfile = vim.fn.stdpath("state") .. "/lazy-lock.json",
   performance = {
     rtp = {
       disabled_plugins = {
@@ -334,14 +332,6 @@ require("lazy").setup({
       },
     },
   },
-})
-
-vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-  pattern = { "*.md", "*.markdown" },
-  callback = function(args)
-    vim.bo[args.buf].filetype = "markdown"
-    pcall(vim.treesitter.start, args.buf, "markdown")
-  end,
 })
 
 local blocked_git_commands = {
