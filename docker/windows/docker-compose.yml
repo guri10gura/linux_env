@@ -1,0 +1,22 @@
+services:
+  dev:
+    build:
+      context: ../..
+      dockerfile: docker/Dockerfile
+    container_name: linux_container
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - type: bind
+        source: ${USERPROFILE}
+        target: /home/user/host
+      - ../../data/.config/nvim:/home/user/.config/nvim:ro
+      - ../../data/.local/share/nvim:/home/user/.local/share/nvim
+      - ../../data/.local/state/nvim:/home/user/.local/state/nvim
+      - ../../data/.cache/nvim:/home/user/.cache/nvim
+      - ../../data/.gitconfig:/home/user/.gitconfig:ro
+      - ../../data/.bashrc:/home/user/.bashrc:ro
+      - ../../data/.tmux.conf:/home/user/.tmux.conf:ro
+      - ../../data/.stylua.toml:/home/user/.stylua.toml:ro
+    tty: true
+    stdin_open: true
