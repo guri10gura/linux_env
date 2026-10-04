@@ -306,6 +306,27 @@ require("lazy").setup({
     },
   },
   {
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreview", "MarkdownPreviewStop", "MarkdownPreviewToggle" },
+    ft = { "markdown" },
+    build = "cd app && npm install",
+    keys = {
+      { "<leader>mp", "<cmd>MarkdownPreviewToggle<cr>", ft = "markdown", desc = "Markdown: toggle browser preview" },
+      { "<leader>mP", "<cmd>MarkdownPreviewStop<cr>", ft = "markdown", desc = "Markdown: stop browser preview" },
+    },
+    init = function()
+      vim.g.mkdp_filetypes = { "markdown" }
+      vim.g.mkdp_port = 8080
+      vim.g.mkdp_open_ip = "127.0.0.1"
+      vim.g.mkdp_browserfunc = "MkdpOpenPreview"
+      vim.cmd([[
+        function! MkdpOpenPreview(url)
+          echom "Markdown preview URL: " . a:url
+        endfunction
+      ]])
+    end,
+  },
+  {
     "t9md/vim-quickhl",
     lazy = false,
   },
