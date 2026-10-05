@@ -4,6 +4,8 @@ services:
       context: ../..
       dockerfile: docker/Dockerfile
     container_name: linux_container
+    ports:
+      - "127.0.0.1:8081:8080"
     volumes:
       - type: bind
         source: ${USERPROFILE}

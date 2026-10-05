@@ -309,22 +309,29 @@ require("lazy").setup({
     "iamcco/markdown-preview.nvim",
     cmd = { "MarkdownPreview", "MarkdownPreviewStop", "MarkdownPreviewToggle" },
     ft = { "markdown" },
-    build = "cd app && npm install",
+    build = "npm install && cd app && npm install",
     keys = {
       { "<leader>mp", "<cmd>MarkdownPreviewToggle<cr>", ft = "markdown", desc = "Markdown: toggle browser preview" },
       { "<leader>mP", "<cmd>MarkdownPreviewStop<cr>", ft = "markdown", desc = "Markdown: stop browser preview" },
     },
     init = function()
+      local in_docker = vim.fn.filereadable("/.dockerenv") == 1
+      local in_ssh = vim.env.SSH_CONNECTION ~= nil or vim.env.SSH_CLIENT ~= nil or vim.env.SSH_TTY ~= nil
+      local suppress_browser = in_docker or in_ssh
+
       vim.g.mkdp_filetypes = { "markdown" }
       vim.g.mkdp_port = 8080
-      vim.g.mkdp_open_to_the_world = 1
+      vim.g.mkdp_open_to_the_world = in_docker and 1 or 0
       vim.g.mkdp_open_ip = "127.0.0.1"
-      vim.g.mkdp_browserfunc = "MkdpOpenPreview"
-      vim.cmd([[
-        function! MkdpOpenPreview(url)
-          echom "Markdown preview URL: " . a:url
-        endfunction
-      ]])
+      vim.g.mkdp_echo_preview_url = 1
+      vim.g.mkdp_browserfunc = suppress_browser and "MkdpOpenPreview" or ""
+
+      if suppress_browser then
+        vim.cmd([[
+          function! MkdpOpenPreview(url)
+          endfunction
+        ]])
+      end
     end,
   },
   {

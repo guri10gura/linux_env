@@ -45,10 +45,22 @@ dockerコンテナを実行することで環境を利用できる
 $ docker exec -it linux_env shell
 ```
 
+### Docker Desktop (Windows) で Markdown プレビューを表示する
+
+Windows 用 Compose 設定でコンテナを起動すると、Markdown Preview のポート `8080` が Windows の `127.0.0.1:8081` に転送されます。
+
+```powershell
+> docker compose -f docker/windows/docker-compose.yml up -d
+```
+
+Neovim で Markdown ファイルを開き、`<leader>mp` を実行します。表示された URL（`http://127.0.0.1:8081/page/...`）を Windows のブラウザーで開くとプレビューできます。
+
+Docker コンテナ内および SSH 接続先の Linux ではブラウザーを起動せず、URL を表示します。Docker を使わず Windows またはローカル Linux で nvim を直接起動する場合は、ブラウザーを起動し、URL も表示します。
+
 ### SSH 接続経由で Markdown プレビューを表示する
 
-Windows のブラウザーで Markdown プレビューを表示するには、Windows から Linux への SSH 接続でポート転送が必要となる。<br>
-Docker のプレビューポートは、Linux 側の `127.0.0.1:8080` のみに公開される。
+Windows から SSH で Linux に接続して nvim を使う場合（Docker 内外のどちらでも）、URL が表示されるので Windows のブラウザーで開きます。Windows から Linux への SSH 接続でポート転送を設定してください。<br>
+Docker 内で nvim を使う場合は、プレビューポートが Linux 側の `127.0.0.1:8080` のみに公開されるため、Docker のポート転送も必要です。
 
 ```powershell
 > ssh -L 8080:127.0.0.1:8080 <linux-user>@<linux-host>
@@ -99,10 +111,15 @@ $ ./script/setup_linux.sh
 > winget install --id LLVM.clangd --exact
 ```
 
+- Node.js をインストール
+  <br>markdown-preview.nvim のビルドと pyright の実行に必要
+
+```powershell
+> winget install OpenJS.NodeJS.LTS
+```
+
 - pyright をインストール
   <br>outline.nvimが利用する python向けLSP作成のため必要
-  - Node.jsをインストール
-    <br>[Node.js®をダウンロードする](https://nodejs.org/ja/download)
   - npmでpyrightをインストール
 
 ```powershell
@@ -219,4 +236,3 @@ data/
 | 19  | `<leader>cp`, `<leader>cf`, `<leader>cc`                                           | 自前のコマンド           | ファイルパス、ファイル名、ディレクトリのコピーと移動           |
 | 20  | `:<CR>` の特別処理 (`:e.`)                                                         | 自前のコマンド           | `:e.` で Neo-tree を開く                                       |
 | 21  | `<Tab>`                                                                            | blink.cmp                | 表示中の補完候補を確定                                         |
-
