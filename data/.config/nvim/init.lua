@@ -56,12 +56,12 @@ require("lazy").setup({
         win = {
           input = {
             keys = {
-              ["<leader>uc"] = { "close", mode = { "n", "i" } },
+              ["yuc"] = { "close", mode = { "n", "i" } },
             },
           },
           list = {
             keys = {
-              ["<leader>uc"] = { "close", mode = { "n", "x" } },
+              ["yuc"] = { "close", mode = { "n", "x" } },
             },
           },
         },
@@ -76,7 +76,7 @@ require("lazy").setup({
     "hedyhli/outline.nvim",
     cmd = { "Outline", "OutlineOpen" },
     keys = {
-      { "<leader>uo", "<cmd>Outline<cr>", desc = "Toggle outline" },
+      { "yuo", "<cmd>Outline<cr>", desc = "Toggle outline" },
     },
     opts = {
       outline_window = {
@@ -307,12 +307,11 @@ require("lazy").setup({
   },
   {
     "iamcco/markdown-preview.nvim",
-    cmd = { "MarkdownPreview", "MarkdownPreviewStop", "MarkdownPreviewToggle" },
-    ft = { "markdown" },
+    lazy = false,
     build = "npm install && cd app && npm install",
     keys = {
-      { "<leader>mp", "<cmd>MarkdownPreviewToggle<cr>", ft = "markdown", desc = "Markdown: toggle browser preview" },
-      { "<leader>mP", "<cmd>MarkdownPreviewStop<cr>", ft = "markdown", desc = "Markdown: stop browser preview" },
+      { "yup", "<cmd>MarkdownPreviewToggle<cr>", ft = "markdown", desc = "Markdown: toggle browser preview" },
+      { "yuP", "<cmd>MarkdownPreviewStop<cr>", ft = "markdown", desc = "Markdown: stop browser preview" },
     },
     init = function()
       local in_docker = vim.fn.filereadable("/.dockerenv") == 1
@@ -490,27 +489,27 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
-vim.keymap.set("n", "<leader>uf", function()
+vim.keymap.set("n", "yuf", function()
   Snacks.picker.files()
 end, { desc = "Snacks: files" })
 
-vim.keymap.set("n", "<leader>ug", function()
+vim.keymap.set("n", "yug", function()
   Snacks.picker.grep()
 end, { desc = "Snacks: grep" })
 
-vim.keymap.set("n", "<leader>ub", function()
+vim.keymap.set("n", "yub", function()
   Snacks.picker.buffers()
 end, { desc = "Snacks: buffers" })
 
-vim.keymap.set("n", "<leader>ur", function()
+vim.keymap.set("n", "yur", function()
   Snacks.picker.recent()
 end, { desc = "Snacks: recent files" })
 
-vim.keymap.set("n", "<leader>un", function()
+vim.keymap.set("n", "yun", function()
   Snacks.notifier.show_history()
 end, { desc = "Snacks: notification history" })
 
-vim.keymap.set("n", "<leader>uN", function()
+vim.keymap.set("n", "yuN", function()
   Snacks.notifier.hide()
 end, { desc = "Snacks: clear notifications" })
 
@@ -531,18 +530,18 @@ vim.keymap.set("n", "<C-k>", function()
   require("snacks").scroll(-1)
 end, { desc = "Smooth scroll up 1 line" })
 
-vim.keymap.set({ "n", "x" }, "<leader>m", "<Plug>(quickhl-manual-this)")
-vim.keymap.set({ "n", "x" }, "<leader>M", "<Plug>(quickhl-manual-reset)")
-vim.keymap.set("n", "<leader>j", "<Plug>(quickhl-cword-toggle)")
+vim.keymap.set({ "n", "x" }, "<Space>m", "<Plug>(quickhl-manual-this)")
+vim.keymap.set({ "n", "x" }, "<Space>M", "<Plug>(quickhl-manual-reset)")
+vim.keymap.set("n", "<Space>j", "<Plug>(quickhl-cword-toggle)")
 
 -- neo-tree
 vim.keymap.set("n", "<leader>tt", ":terminal<CR>", { desc = "Open terminal" })
 vim.keymap.set("t", "<Esc><Esc>", [[<C-\><C-n>]], { desc = "Exit terminal mode" })
 
-vim.keymap.set("n", "<leader>ue", "<cmd>Neotree toggle<cr>", { desc = "Toggle file tree" })
-vim.keymap.set("n", "<leader>uE", "<cmd>Neotree reveal<cr>", { desc = "Reveal current file in tree" })
+vim.keymap.set("n", "yue", "<cmd>Neotree toggle<cr>", { desc = "Toggle file tree" })
+vim.keymap.set("n", "yuE", "<cmd>Neotree reveal<cr>", { desc = "Reveal current file in tree" })
 
-vim.keymap.set("n", "<leader>ua", function()
+vim.keymap.set("n", "yua", function()
   Snacks.picker.treesitter({
     filter = {
       default = {
