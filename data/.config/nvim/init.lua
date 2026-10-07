@@ -12,6 +12,16 @@ vim.filetype.add({
 })
 vim.cmd("syntax enable")
 
+local tree_sitter_compilers = { "cc", "gcc", "clang", "cl", "zig" }
+local function has_tree_sitter_compiler()
+  for _, compiler in ipairs(tree_sitter_compilers) do
+    if vim.fn.executable(compiler) == 1 then
+      return true
+    end
+  end
+  return false
+end
+
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
     "git",
@@ -228,7 +238,11 @@ require("lazy").setup({
     "nvim-treesitter/nvim-treesitter",
     branch = "master",
     lazy = false,
-    build = ":TSUpdate",
+    build = function()
+      if has_tree_sitter_compiler() then
+        vim.cmd("TSUpdate")
+      end
+    end,
     config = function()
       local ok, configs = pcall(require, "nvim-treesitter.configs")
       if not ok then
@@ -236,9 +250,17 @@ require("lazy").setup({
         return
       end
 
+      local compiler_available = has_tree_sitter_compiler()
+      if not compiler_available then
+        vim.notify(
+          "No C compiler (cc, gcc, clang, cl, or zig) found; skipping Treesitter parser installation.",
+          vim.log.levels.WARN
+        )
+      end
+
       configs.setup({
-        ensure_installed = { "c", "cpp", "python", "markdown", "markdown_inline" },
-        auto_install = true,
+        ensure_installed = compiler_available and { "c", "cpp", "python", "markdown", "markdown_inline" } or {},
+        auto_install = compiler_available,
         highlight = { enable = false },
         indent = { enable = true },
       })
